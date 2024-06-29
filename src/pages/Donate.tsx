@@ -1,7 +1,6 @@
 import { Button } from "@/components/ui/button.tsx"
 import { Separator } from "@/components/ui/separator"
 import { Textarea } from "@/components/ui/textarea"
-import { Label } from "@/components/ui/label.tsx"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx"
 import { BadgeDollarSign, LoaderCircle } from "lucide-react"
 

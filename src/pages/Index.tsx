@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom"
-import { ArrowRight, Info, Menu } from "lucide-react"
+import { ArrowRight, Info } from "lucide-react"
 import { Button } from "@/components/ui/button.tsx"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 import { Input } from "@/components/ui/input.tsx"
@@ -11,7 +11,7 @@ import mountVector from "@/assets/MountVector.svg"
 import aids from "@/assets/aids.jpg"
 import mountIllust from "@/assets/mountIllust.png"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form.tsx"
-import { Controller, useForm } from "react-hook-form"
+import { useForm } from "react-hook-form"
 import { Separator } from "@/components/ui/separator.tsx"
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group.tsx"
 import { z } from "zod"
@@ -55,9 +55,10 @@ function Index() {
             ),
         })
 
-        navigate("/donasi", ({ state: data }))
+        navigate("/donasi", { state: data })
     }
 
+    // @ts-expect-error: Expect string
     return (
         <div className={"overflow-x-hidden"}>
             {/* Section 1 | Hero */}
@@ -204,10 +205,10 @@ function Index() {
                                                     <FormControl>
                                                         <ToggleGroup onValueChange={field.onChange} value={field.value} type="single" className={"flex-wrap gap-2"}>
                                                             {donateGroup.map((data) => (
-                                                                <FormItem key={data.value} className="flex items-center">
+                                                                <FormItem key={data.nominal} className="flex items-center">
                                                                     <FormControl>
                                                                         <ToggleGroupItem
-                                                                            value={data.value}
+                                                                            value={data.nominal}
                                                                             className={
                                                                                 "bg-[#262933] p-5 font-cera font-medium tracking-wider ring-indigo-600 hover:ring-2 data-[state=on]:bg-indigo-600"
                                                                             }>
@@ -333,12 +334,12 @@ function Index() {
 
 export default Index
 
-const donateGroup: { value: number; formatted: string }[] = [
-    { value: 10000, formatted: "Rp. 10.000" },
-    { value: 20000, formatted: "Rp. 20.000" },
-    { value: 50000, formatted: "Rp. 50.000" },
-    { value: 75000, formatted: "Rp. 75.000" },
-    { value: 100000, formatted: "Rp. 100.000" },
-    { value: 150000, formatted: "Rp. 150.000" },
-    { value: 200000, formatted: "Rp. 200.000" },
+const donateGroup: { nominal: number; nString: string; formatted: string }[] = [
+    { nominal: 10000, nString: "10000", formatted: "Rp. 10.000" },
+    { nominal: 20000, nString: "20000", formatted: "Rp. 20.000" },
+    { nominal: 50000, nString: "50000", formatted: "Rp. 50.000" },
+    { nominal: 75000, nString: "75000", formatted: "Rp. 75.000" },
+    { nominal: 100000, nString: "100000", formatted: "Rp. 100.000" },
+    { nominal: 150000, nString: "150000", formatted: "Rp. 150.000" },
+    { nominal: 200000, nString: "200000", formatted: "Rp. 200.000" },
 ]

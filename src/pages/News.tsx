@@ -8,12 +8,12 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Button } from "@/components/ui/button.tsx"
 import { ArrowRight } from "lucide-react"
 import date from "date-and-time"
-import readingTime from "reading-time"
 import supabase from "@/lib/supabase.ts"
 import { useNavigate } from "react-router-dom"
+import { readingTime } from "reading-time-estimator"
 
 export default function News() {
-    const [news, setNews] = useState([])
+    const [news, setNews] = useState<Berita[]>([])
 
     useEffect(() => {
         getNews()
@@ -23,7 +23,6 @@ export default function News() {
         const { data: udata } = await supabase.from("news").select(`id, title, description, short_description, date, type, image, site(id, name, logo)`).order("date", { ascending: false })
         setNews(udata)
     }
-
 
     return (
         <div className={"grid gap-12 bg-[radial-gradient(circle_at_top,_#2d303bcc,_#0F1014)] px-24 py-8 font-cera"}>
@@ -87,7 +86,7 @@ export default function News() {
     )
 }
 
-function NewsList({ berita }) {
+function NewsList({ berita }: News) {
     const navigate = useNavigate()
     const now = new Date()
     const added = date.parse(berita.date, "YYYY-MM-DDThh:mm:ss")
@@ -100,7 +99,7 @@ function NewsList({ berita }) {
         return difference.toHours() < 1 ? `${difference.toMinutes().toFixed()} menit yang lalu` : `${difference.toHours().toFixed()} jam yang lalu`;
     };
 
-    const read = readingTime(berita.description).minutes
+    const minutes = readingTime(berita.description).minutes
 
     return (
         <Card onClick={() => {
@@ -129,8 +128,32 @@ function NewsList({ berita }) {
             <div className={"mb-6 flex gap-3 px-4 py-2 text-sm text-gray-400"}>
                 <p className={"font-medium text-rose-400"}>{berita.type}</p>
                 <span>•</span>
-                <p>{read} menit baca</p>
+                <p>{minutes} menit baca</p>
             </div>
         </Card>
     )
+}
+
+export interface News {
+    berita: Berita
+}
+
+export interface Berita {
+    id: number,
+    title: string,
+    description: string,
+    short_description: string,
+    date: string,
+    link: string,
+    type: string,
+    image: string,
+    site: {
+        id: number,
+        name: string,
+        logo: string,
+        url: string
+    },
+    description_html: string,
+
+
 }

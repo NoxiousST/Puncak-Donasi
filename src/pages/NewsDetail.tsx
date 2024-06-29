@@ -6,11 +6,18 @@ import parse from 'html-react-parser';
 import JsxParser from "react-jsx-parser"
 import date from "date-and-time"
 import { ArrowUpRight, Share2 } from "lucide-react"
-import readingTime from "reading-time"
+import { Berita } from "@/pages/News.tsx"
+import { readingTime } from "reading-time-estimator"
+
+interface News {
+    data: Berita[],
+    status: number,
+    statusText: string
+}
 
 export default function NewsDetail() {
-    const datas = useLoaderData();
-    const news = datas.data[0]
+    const data = useLoaderData() as News
+    const news = data.data[0]
 
     const now = new Date()
     const added = date.parse(news.date, "YYYY-MM-DDThh:mm:ss")
@@ -21,7 +28,7 @@ export default function NewsDetail() {
         return difference.toHours() < 1 ? `${difference.toMinutes().toFixed()} menit` : `${difference.toHours().toFixed()} jam`
     }
 
-    const read = readingTime(news.description).minutes
+    const minutes = readingTime(news.description).minutes
 
     return (
         <div className={"grid bg-[radial-gradient(circle_at_right,_#2d303bcc,_#0F1014),_radial-gradient(circle_at_left,_#2d303bcc,_#0F1014)] pt-32"}>
@@ -39,7 +46,7 @@ export default function NewsDetail() {
                                 <p className={"flex items-center gap-3 text-sm font-medium text-gray-400"}>
                                     <p className={"text-lg text-white"}>{news.site.name}</p>
                                     <span>•</span>
-                                    <p>{read} menit baca</p>
+                                    <p>{minutes} menit baca</p>
                                 </p>
                             </div>
                         </div>
@@ -57,8 +64,7 @@ export default function NewsDetail() {
                 </div>
                 <LazyLoadImage className={"mx-auto my-4 aspect-video w-8/12"} src={news.image} />
                 <article id={"content"} className={"prose prose-lg prose-invert prose-blue w-7/12 mx-auto grid gap-6 !text-white"}>
-                    {(news.site.id === 1 || news.site.id === 4) && <JsxParser jsx={news.description_html} />}
-                    {(news.site.id === 2 || news.site.id === 3 || news.site.id === 5) && parse(news.description_html)}
+                    {parse(news.description_html)}
                 </article >
             </div>
         </div>
