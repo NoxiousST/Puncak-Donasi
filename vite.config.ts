@@ -10,12 +10,6 @@ export default defineConfig({
             "@": path.resolve(__dirname, "./src"),
         },
     },
-    build: {
-        manifest: true,
-        rollupOptions: {
-            input: './src/main.jsx',
-        },
-    },
     server: {
         port: 4242,
         proxy: {
