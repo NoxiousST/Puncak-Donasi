@@ -58,7 +58,7 @@ function Index() {
         navigate("/donasi", { state: data })
     }
 
-    // @ts-expect-error: Expect string
+    // @ts-ignore
     return (
         <div className={"overflow-x-hidden"}>
             {/* Section 1 | Hero */}

@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import { Link, useLoaderData } from "react-router-dom"
 import parse from 'html-react-parser';
-import JsxParser from "react-jsx-parser"
 import date from "date-and-time"
 import { ArrowUpRight, Share2 } from "lucide-react"
 import { Berita } from "@/pages/News.tsx"
