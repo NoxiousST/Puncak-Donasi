@@ -8,7 +8,7 @@ import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/ca
 import { Button } from "@/components/ui/button.tsx"
 import { ArrowRight } from "lucide-react"
 import date from "date-and-time"
-import { useReadingTime } from "react-hook-reading-time"
+import readingTime from "reading-time"
 import supabase from "@/lib/supabase.ts"
 import { useNavigate } from "react-router-dom"
 
@@ -100,7 +100,7 @@ function NewsList({ berita }) {
         return difference.toHours() < 1 ? `${difference.toMinutes().toFixed()} menit yang lalu` : `${difference.toHours().toFixed()} jam yang lalu`;
     };
 
-    const { minutes } = useReadingTime(berita.description)
+    const read = readingTime(berita.description).minutes
 
     return (
         <Card onClick={() => {
@@ -129,7 +129,7 @@ function NewsList({ berita }) {
             <div className={"mb-6 flex gap-3 px-4 py-2 text-sm text-gray-400"}>
                 <p className={"font-medium text-rose-400"}>{berita.type}</p>
                 <span>•</span>
-                <p>{minutes} menit baca</p>
+                <p>{read} menit baca</p>
             </div>
         </Card>
     )

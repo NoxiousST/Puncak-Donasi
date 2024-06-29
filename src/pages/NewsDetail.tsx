@@ -5,8 +5,8 @@ import { Link, useLoaderData } from "react-router-dom"
 import parse from 'html-react-parser';
 import JsxParser from "react-jsx-parser"
 import date from "date-and-time"
-import { useReadingTime } from "react-hook-reading-time"
 import { ArrowUpRight, Share2 } from "lucide-react"
+import readingTime from "reading-time"
 
 export default function NewsDetail() {
     const datas = useLoaderData();
@@ -21,7 +21,7 @@ export default function NewsDetail() {
         return difference.toHours() < 1 ? `${difference.toMinutes().toFixed()} menit` : `${difference.toHours().toFixed()} jam`
     }
 
-    const { minutes } = useReadingTime(news.description)
+    const read = readingTime(news.description).minutes
 
     return (
         <div className={"grid bg-[radial-gradient(circle_at_right,_#2d303bcc,_#0F1014),_radial-gradient(circle_at_left,_#2d303bcc,_#0F1014)] pt-32"}>
@@ -39,7 +39,7 @@ export default function NewsDetail() {
                                 <p className={"flex items-center gap-3 text-sm font-medium text-gray-400"}>
                                     <p className={"text-lg text-white"}>{news.site.name}</p>
                                     <span>•</span>
-                                    <p>{minutes} menit baca</p>
+                                    <p>{read} menit baca</p>
                                 </p>
                             </div>
                         </div>
