@@ -19,6 +19,9 @@ module.exports = {
             montserrat: ["Montserrat", "sans-serif"],
         },
         extend: {
+            backgroundImage: {
+                'erupt': "url('/src/assets/erupt.jpeg')",
+            },
             colors: {
                 border: "hsl(var(--border))",
                 input: "hsl(var(--input))",

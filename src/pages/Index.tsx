@@ -19,6 +19,10 @@ import { zodResolver } from "@hookform/resolvers/zod"
 import { useToast } from "@/components/ui/use-toast.ts"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs.tsx"
 import { NumericFormat } from "react-number-format"
+import { useEffect, useState } from "react"
+import supabase from "@/lib/supabase.ts"
+import { Berita } from "@/pages/News.tsx"
+import date from "date-and-time"
 
 const FormSchema = z.object({
     fName: z.string(),
@@ -32,6 +36,10 @@ const FormSchema = z.object({
 })
 
 function Index() {
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, []);
+
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
@@ -58,7 +66,17 @@ function Index() {
         navigate("/donasi", { state: data })
     }
 
-    // @ts-ignore
+    const [news, setNews] = useState<Berita[]>([])
+
+    useEffect(() => {
+        getNews()
+    }, [])
+
+    async function getNews() {
+        const { data: udata } = await supabase.from("news").select(`id, title, description, short_description, date, type, image, site(id, name, logo)`).order("date", { ascending: false }).limit(3)
+        setNews(udata)
+    }
+
     return (
         <div className={"overflow-x-hidden"}>
             {/* Section 1 | Hero */}
@@ -325,6 +343,42 @@ function Index() {
                                 </CardContent>
                             </div>
                         </Card>
+                    </div>
+                </div>
+            </section>
+
+            {/* Section 4 | News */}
+            <section className={"h-[110vh] text-white"}>
+                <div className={"bg-erupt h-full bg-cover bg-left bg-no-repeat"}>
+                    <div className={"h-full bg-[radial-gradient(circle_80rem_at_left,_#00000066,_#000000aa,_#0F1014f5,_#0F1014)]"}>
+                        <div className={"flex h-full w-full"}>
+                            <div className={"h-fit w-1/2 px-20 py-28"}>
+                                <p className="mb-6 block text-sm font-bold uppercase tracking-wide text-gray-300">Berita</p>
+                                <h1 className={"pr-16 font-cera text-3xl font-bold"}>Berita dan Informasi Gunung berapi Terkini dan Terbaru.</h1>
+                            </div>
+                            <div className={"flex h-full w-1/2 items-center"}>
+                                <div className={"flex h-fit flex-col gap-4 rounded-2xl bg-[#1b1d25]/75 px-4 py-4 backdrop-blur-lg backdrop-contrast-75"}>
+                                    <Button variant={"ghost"} size={"sm"} className={"w-fit place-self-end font-semibold text-rose-500 hover:bg-rose-600 hover:text-white"} asChild>
+                                        <Link to={"/news"}>Lihat semua</Link>
+                                    </Button>
+                                    {news.map((item) => (
+                                        <div key={item.id} className={"rounded p-2 hover:cursor-pointer hover:bg-[#2d303b] transition-all"} onClick={() => navigate(`/news/${item.site.id}`)}>
+                                            <div className={"flex h-48 w-[40rem] gap-2 rounded-md"}>
+                                                <LazyLoadImage className={"aspect-[3/2] rounded-md"} src={item.image} alt={"news"} />
+                                                <div className={"flex flex-col justify-between px-2 py-1"}>
+                                                    <div>
+                                                        <div className={"w-fit rounded-full bg-rose-600 px-2 py-[1px] font-cera text-sm font-medium"}>{item.site.name}</div>
+                                                        <h1 className={"line-clamp-2 font-cera text-xl font-bold"}>{item.title}</h1>
+                                                        <p className={"line-clamp-3 text-sm text-gray-300"}>{item.short_description}</p>
+                                                    </div>
+                                                    <p className={"text-right text-sm text-gray-400"}>{date.format(date.parse(item.date, "YYYY-MM-DDThh:mm:ss"), "dddd, DD MMMM YYYY")}</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </section>

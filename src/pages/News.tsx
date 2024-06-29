@@ -17,6 +17,7 @@ export default function News() {
 
     useEffect(() => {
         getNews()
+        window.scrollTo(0, 0);
     }, [])
 
     async function getNews() {

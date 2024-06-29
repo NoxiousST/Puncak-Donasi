@@ -7,6 +7,7 @@ import date from "date-and-time"
 import { ArrowUpRight, Share2 } from "lucide-react"
 import { Berita } from "@/pages/News.tsx"
 import { readingTime } from "reading-time-estimator"
+import { useEffect } from "react"
 
 interface News {
     data: Berita[],
@@ -20,6 +21,10 @@ export default function NewsDetail() {
 
     const now = new Date()
     const added = date.parse(news.date, "YYYY-MM-DDThh:mm:ss")
+
+    useEffect(() => {
+        window.scrollTo(0, 0);
+    }, [data]);
 
     const tanggal = () => {
         if (!date.isSameDay(now, added)) return date.format(added, "dddd, DD MMMM YYYY")
