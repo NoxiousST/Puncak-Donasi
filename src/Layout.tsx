@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
-import { Menu } from "lucide-react"
+import { Menu, Terminal } from "lucide-react"
 import { Button } from "@/components/ui/button.tsx"
 
 import { LazyLoadImage } from "react-lazy-load-image-component"
@@ -19,17 +19,7 @@ function App() {
                 </div>
 
                 <div className="hidden w-auto px-24 md:flex md:items-center">
-                    <div className="flex gap-16 font-cera">
-                        <Button variant="link" className={"text-lg font-medium text-gray-300 hover:text-white"}>
-                            <Link to={"/about"}>About</Link>
-                        </Button>
-                        <Button variant="link" className={"text-lg font-medium text-gray-300 hover:text-white"}>
-                            <Link to={"/projects"}>Projects</Link>
-                        </Button>
-                        <Button variant="link" className={"text-lg font-medium text-gray-300 hover:text-white"}>
-                            <Link to={"/contact"}>Contact</Link>
-                        </Button>
-                    </div>
+                    <NavigationMenuDemo />
                 </div>
                 <div>
                     <Button
@@ -142,5 +132,107 @@ function App() {
         </div>
     )
 }
+
+import { cn } from "@/lib/utils"
+import { NavigationMenu, NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList, NavigationMenuTrigger, navigationMenuTriggerStyle } from "@/components/ui/navigation-menu"
+import React from "react"
+
+function NavigationMenuDemo() {
+    return (
+        <NavigationMenu className={"font-cera"}>
+            <NavigationMenuList>
+                <NavigationMenuItem>
+                    <NavigationMenuTrigger className={"bg-transparent hover:border-gray-500"}>Getting started</NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                        <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
+                            <li className="row-span-3">
+                                <NavigationMenuLink asChild>
+                                    <a
+                                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-muted/50 to-muted p-6 no-underline outline-none focus:shadow-md"
+                                        href="/">
+                                        <Terminal className="h-6 w-6" />
+                                        <div className="mb-2 mt-4 text-lg font-medium">shadcn/ui</div>
+                                        <p className="text-sm leading-tight text-muted-foreground">
+                                            Beautifully designed components that you can copy and paste into your apps. Accessible. Customizable. Open Source.
+                                        </p>
+                                    </a>
+                                </NavigationMenuLink>
+                            </li>
+                            <ListItem href="/docs" title="Introduction">
+                                Re-usable components built using Radix UI and Tailwind CSS.
+                            </ListItem>
+                            <ListItem href="/docs/installation" title="Installation">
+                                How to install dependencies and structure your app.
+                            </ListItem>
+                            <ListItem href="/docs/primitives/typography" title="Typography">
+                                Styles for headings, paragraphs, lists...etc
+                            </ListItem>
+                        </ul>
+                    </NavigationMenuContent>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <Link to="/news" >
+                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:border-gray-500")}>
+                            Berita & Informasi
+                        </NavigationMenuLink>
+                    </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
+                    <NavigationMenuTrigger className={"bg-transparent hover:border-gray-500"}>Analitik</NavigationMenuTrigger>
+                    <NavigationMenuContent className={"bg-[#1b1d25]"}>
+                        <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
+                            <li className="row-span-2">
+                                <NavigationMenuLink asChild>
+                                    <a
+                                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-[#2d303b]/30 to-[#2d303b]/75 p-6 no-underline outline-none focus:shadow-md"
+                                        href="/">
+                                        <Terminal className="h-6 w-6" />
+                                        <div className="mb-2 mt-4 text-lg font-medium">shadcn/ui</div>
+                                        <p className="text-sm leading-tight text-muted-foreground">
+                                            Beautifully designed components that you can copy and paste into your apps.
+                                        </p>
+                                    </a>
+                                </NavigationMenuLink>
+                            </li>
+                            <ListItem href="/tingkat-aktivitas" title="Tingkat Aktivitas">
+                                Daftar Tingkat Aktivitas Gunung Api
+                            </ListItem>
+                            <ListItem href="/laporan-aktivitas" title="Laporan Aktivitas">
+                                Laporan Aktivitas Gunung Api (Volcanic Activity Report)
+                            </ListItem>
+                            <ListItem href="laporan-harian" title="Laporan Harian">
+                                Laporan Harian - Kamis, 04 Juli 2024
+                            </ListItem>
+                            <ListItem href="informasi-letusan" title="Informasi Letusan ">
+                                Styles for headings, paragraphs, lists...etc
+                            </ListItem>
+                        </ul>
+                    </NavigationMenuContent>
+                </NavigationMenuItem>
+            </NavigationMenuList>
+        </NavigationMenu>
+    )
+}
+
+const ListItem = React.forwardRef<React.ElementRef<"a">, React.ComponentPropsWithoutRef<"a">>(({ className, title, children, ...props }, ref) => {
+    return (
+        <li>
+            <NavigationMenuLink asChild>
+                <Link
+                    to={props.href}
+                    ref={ref}
+                    className={cn(
+                        "block select-none space-y-1 rounded-md p-3 leading-none no-underline outline-none transition-colors hover:bg-[#2d303bcc] hover:text-accent-foreground focus:bg-accent focus:text-accent-foreground",
+                        className,
+                    )}
+                    {...props}>
+                    <div className="text-sm font-medium leading-none">{title}</div>
+                    <p className="line-clamp-2 text-sm leading-snug text-muted-foreground">{children}</p>
+                </Link>
+            </NavigationMenuLink>
+        </li>
+    )
+})
+ListItem.displayName = "ListItem"
 
 export default App

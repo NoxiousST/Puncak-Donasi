@@ -35,7 +35,7 @@ const FormSchema = z.object({
     }),
 })
 
-function Index() {
+function App() {
     useEffect(() => {
         window.scrollTo(0, 0);
     }, []);
@@ -386,7 +386,7 @@ function Index() {
     )
 }
 
-export default Index
+export default App
 
 const donateGroup: { nominal: number; nString: string; formatted: string }[] = [
     { nominal: 10000, nString: "10000", formatted: "Rp. 10.000" },
