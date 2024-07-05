@@ -19,6 +19,7 @@ import LaporanAktivitas from "@/pages/analitik/LaporanAktivitas.tsx"
 import LaporanHarian from "@/pages/analitik/LaporanHarian.tsx"
 import InformasiLetusan from "@/pages/analitik/InformasiLetusan.tsx"
 import Mapbox from "@/pages/map/Mapbox.tsx"
+import 'mapbox-gl/dist/mapbox-gl.css';
 
 const router = createBrowserRouter(
     createRoutesFromElements([
@@ -37,6 +38,7 @@ const router = createBrowserRouter(
             <Route path="laporan-harian" element={<LaporanHarian />}/>
             <Route path="informasi-letusan" element={<InformasiLetusan />}/>
             <Route path="map" element={<Mapbox />}/>
+
         </Route>,
         <Route path="donasi" element={<DonateCheck />} />,
         <Route path="donasi/checkout" element={<Donate />} />,

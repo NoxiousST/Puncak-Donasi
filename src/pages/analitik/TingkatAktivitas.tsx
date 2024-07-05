@@ -5,7 +5,8 @@ import { CornerUpRight } from "lucide-react"
 import { Link } from "react-router-dom"
 
 type Mount = {
-    name: string
+    name: string,
+    location: string,
     link: string
 }
 
@@ -49,13 +50,12 @@ export default function TingkatAktivitas() {
                                         <div className={"text-gray-300"}>Tidak ada gunung api {data.status}</div>
                                     ) : (
                                         data.mounts.map((mount) => {
-                                            const [name, location] = mount.name.split(" - ")
                                             return (
                                                 <Link to={mount.link}>
                                                     <div className={"group/mount flex items-center rounded-lg px-4 py-2 hover:bg-[#414550]/75"}>
                                                         <div className={"flex flex-grow flex-col"}>
-                                                            <span>Gunung {name}</span>
-                                                            <span className={"text-sm text-gray-400"}>{location}</span>
+                                                            <span>Gunung {mount.name}</span>
+                                                            <span className={"text-sm text-gray-400"}>{mount.location}</span>
                                                         </div>
                                                         <Button size={"icon"} className={"hidden !bg-transparent text-rose-500 group-hover/mount:flex"}>
                                                             <CornerUpRight />

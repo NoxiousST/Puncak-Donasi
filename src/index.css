@@ -73,3 +73,29 @@
         @apply rounded-xl border-0 px-4 py-3 font-medium text-white outline-none ring-1 ring-inset ring-gray-700 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 !important
     }
 }
+
+.mapboxgl-popup-content {
+    border-radius: 12px !important;
+    background: #2d303b !important;
+}
+
+.mapboxgl-popup-anchor-top .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-top-right .mapboxgl-popup-tip {
+    border-bottom-color: #2d303b !important;
+}
+.mapboxgl-popup-anchor-bottom .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-left .mapboxgl-popup-tip,
+.mapboxgl-popup-anchor-bottom-right .mapboxgl-popup-tip {
+    border-top-color: #2d303b !important;
+}
+.mapboxgl-popup-anchor-left .mapboxgl-popup-tip {
+    border-right-color: #2d303b !important;
+}
+.mapboxgl-popup-anchor-right .mapboxgl-popup-tip {
+    border-left-color: #2d303b !important;
+}
+
+.mapboxgl-ctrl-attrib, .mapboxgl-ctrl-logo, .mapbox-improve-map {
+    display: none !important;
+}
