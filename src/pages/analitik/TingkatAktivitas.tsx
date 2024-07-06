@@ -51,7 +51,7 @@ export default function TingkatAktivitas() {
                                     ) : (
                                         data.mounts.map((mount) => {
                                             return (
-                                                <Link to={mount.link}>
+                                                <Link to={`/laporan?url=${mount.link}&point=true`}>
                                                     <div className={"group/mount flex items-center rounded-lg px-4 py-2 hover:bg-[#414550]/75"}>
                                                         <div className={"flex flex-grow flex-col"}>
                                                             <span>Gunung {mount.name}</span>

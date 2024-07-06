@@ -107,7 +107,7 @@ function NewsList({ berita }: News) {
             navigate(`/news/${berita.id}`)
         }}
             className={
-                "grid basis-1/4 cursor-pointer bg-[#414550]/15 shadow-lg ring-white ring-offset-1 drop-shadow-lg backdrop-blur-sm backdrop-saturate-100 transition-all hover:scale-[.97] hover:ring"
+                "grid basis-1/4 cursor-pointer bg-[#414550]/15 shadow-lg ring-rose-500 drop-shadow-lg backdrop-blur-sm backdrop-saturate-100 transition-all hover:scale-[.98] hover:ring-4"
             }>
             <LazyLoadImage
                 className={"aspect-[6/5] w-full rounded-xl"}

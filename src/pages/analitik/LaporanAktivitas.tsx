@@ -59,8 +59,8 @@ export default function LaporanAktivitas() {
                                         <span className={"text-gray-500"}>{it.date.slice(3, it.date.length)}</span>
                                     </div>
                                     <div className={"text-gray-200"}>{it.text}</div>
-                                    <Button className={"mt-4 w-fit place-self-end bg-[#333746] font-semibold text-blue-500 hover:bg-[#414550]"}>
-                                        <Link to={it.url}>Lihat Detail</Link>
+                                    <Button className={"mt-4 w-fit place-self-end bg-[#333746] font-semibold text-blue-500 hover:bg-[#414550]"} asChild>
+                                        <Link to={`/laporan?url=${it.url}&point=true`}>Lihat Detail</Link>
                                     </Button>
                                 </div>
                             </div>

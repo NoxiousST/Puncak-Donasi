@@ -14,9 +14,10 @@ module.exports = {
         },
         fontFamily: {
             logo: ["Big Shoulders Text", "sans-serif"],
-            display: ["Cera Pro", "Trebuchet MS", "sans-serif"],
             cera: ["Cera Pro", "sans-serif"],
             montserrat: ["Montserrat", "sans-serif"],
+            inter: ["Inter", "sans-serif"],
+            varela: ["Varela Round", "sans-serif"]
         },
         extend: {
             backgroundImage: {

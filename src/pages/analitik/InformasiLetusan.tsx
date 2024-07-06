@@ -64,8 +64,8 @@ export default function InformasiLetusan() {
                                     <div className={"text-gray-200"}>{it.text}</div>
                                     <LazyLoadImage src={it.image} className={"rounded"}/>
                                     <Button
-                                        className={"mt-4 w-fit place-self-end bg-[#333746] font-semibold text-blue-500 hover:bg-[#414550]"}>
-                                        <Link to={it.url}>Lihat Detail</Link>
+                                        className={"mt-4 w-fit place-self-end bg-[#333746] font-semibold text-blue-500 hover:bg-[#414550]"} asChild>
+                                        <Link to={`/laporan?url=${it.url}&point=true`}>Lihat Detail</Link>
                                     </Button>
                                 </div>
                             </div>

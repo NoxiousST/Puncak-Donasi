@@ -1,4 +1,4 @@
-import Map, { FullscreenControl, GeolocateControl, MapRef, Marker, NavigationControl, Popup, ScaleControl, Source } from "react-map-gl"
+import Map, { FullscreenControl, GeolocateControl, MapRef, Marker, NavigationControl, Popup, ScaleControl } from "react-map-gl"
 import { useEffect, useMemo, useRef, useState } from "react"
 import volcano from "@/assets/volcano.png"
 import { LazyLoadImage } from "react-lazy-load-image-component"
@@ -15,9 +15,12 @@ type Mount = {
     latitude: number
     longitude: number
     link: string
-    visual: string,
-    gempa: string,
-    rekomendasi: string
+    laporan: {
+        image: string,
+        visual: string
+        gempa: string
+        rekomendasi: string,
+    }
 }
 
 type AktivitasResponse = {
@@ -39,7 +42,7 @@ export default function Mapbox() {
             setItems(response.data.aktivitas)
         }
 
-        fetchData()
+        fetchData().finally()
     }, [])
 
     const markers = useMemo(
@@ -56,6 +59,11 @@ export default function Mapbox() {
                                     onClick={(e) => {
                                         e.originalEvent.stopPropagation()
                                         setPopupInfo(mount)
+                                        mapRef.current?.flyTo({
+                                            center: [mount.longitude, mount.latitude + 0.455],
+                                            duration: 3000,
+                                            zoom: 8,
+                                        })
                                     }}
                                     style={{ cursor: "pointer" }}>
                                     <LazyLoadImage src={volcano} className={"h-12 w-12"} />
@@ -69,28 +77,29 @@ export default function Mapbox() {
 
     return (
         <div className={"flex h-screen pt-[74px]"}>
-            <div className={"h-full max-w-80 overflow-y-auto bg-[#0F1014]/75 px-8 py-4 font-cera backdrop-blur-2xl backdrop-contrast-50"}>
+            <div className={"font-varela h-full max-w-80 overflow-y-auto bg-[#0F1014]/75 px-8 py-4 backdrop-blur-2xl backdrop-contrast-50"}>
                 {items.map((item) => (
                     <div className={"w-full max-w-80"}>
-                        <div className={"flex items-center gap-2 py-1 text-xl font-bold"}>
+                        <div className={"flex items-center gap-2 py-1 text-lg font-bold"}>
                             {item.status}
-                            <CircleAlert />
+                            <CircleAlert size={20} />
                         </div>
                         <div className={""}>
                             {item.mounts.length === 0 ? (
-                                <div className={"p-2 text-gray-500"}>Tidak ada gunung api</div>
+                                <div className={"p-2 text-gray-500 text-sm"}>Tidak ada gunung api</div>
                             ) : (
                                 item.mounts.map((mount) => (
                                     <div
-                                        className={"cursor-pointer rounded bg-transparent p-2 font-medium text-gray-300 hover:bg-[#2d303b]"}
-                                        onClick={() =>
+                                        className={"text-sm cursor-pointer rounded bg-transparent p-2 font-medium text-gray-300 hover:bg-[#2d303b]"}
+                                        onClick={() => {
+                                            setPopupInfo(mount)
                                             mapRef.current?.flyTo({
-                                                center: [mount.longitude, mount.latitude],
+                                                center: [mount.longitude, mount.latitude + 0.125],
                                                 duration: 3000,
                                                 zoom: 10,
                                             })
-                                        }>
-                                        {mount.name} <span className={"font-normal text-gray-500"}> - {mount.location}</span>
+                                        }}>
+                                        {mount.name} <span className={" font-normal text-gray-500"}> - {mount.location}</span>
                                     </div>
                                 ))
                             )}
@@ -113,35 +122,49 @@ export default function Mapbox() {
                     minZoom={1}
                     maxZoom={16}
                     maxBounds={[
-                        [90.0000000, -10.0000000],
-                        [140.0000000, 10.0000000],
-                    ]}
-                    terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}>
+                        [90.0, -10.0],
+                        [140.0, 10.0],
+                    ]}>
                     <GeolocateControl />
                     <FullscreenControl />
                     <NavigationControl />
                     <ScaleControl />
 
-                    <Source id="mapbox-dem" type="raster-dem" url="mapbox://mapbox.mapbox-terrain-dem-v1" tileSize={512} maxzoom={14} />
-
                     {markers.map((mark) => mark)}
 
                     {popupInfo && (
-                        <Popup style={{ maxWidth: "320px", width: "fit-content" }} longitude={Number(popupInfo.longitude)} latitude={Number(popupInfo.latitude)} onClose={() => setPopupInfo(null)}>
-                            <Card className={"border-none !bg-transparent"}>
+                        <Popup
+                            anchor={"bottom"}
+                            style={{ maxWidth: "390px", width: "fit-content", minWidth: "280px" }}
+                            longitude={Number(popupInfo.longitude)}
+                            latitude={Number(popupInfo.latitude)}
+                            onClose={() => setPopupInfo(null)}>
+                            <Card className={"font-varela border-none !bg-transparent"}>
                                 <CardHeader className={"p-2"}>
                                     <CardTitle className={"text-xl"}>Gunung {popupInfo.name}</CardTitle>
                                     <CardDescription>{popupInfo.status}</CardDescription>
                                 </CardHeader>
                                 <CardContent className={"max-w-72 p-2"}>
-                                    {popupInfo.visual}
+                                    <div>
+                                        <LazyLoadImage src={popupInfo.laporan.image} />
+                                        <div className={"grid"}>
+                                            <div className={"flex flex-col py-1"}>
+                                                <p className={"font-semibold uppercase text-gray-400"}>Visual</p>
+                                                <p className={""}>{popupInfo.laporan.visual}</p>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </CardContent>
-                                <CardFooter className={"p-2"}>
-                                    <Button type={"button"}>
-                                        <Link to={popupInfo.link} target="_blank" rel="noopener noreferrer">
+                                <CardFooter className={"flex justify-end p-2"}>
+                                    <Button
+                                        type={"button"}
+                                        className={"!bg-blue-500 font-semibold transition-all hover:ring-4 focus-visible:!border-none focus-visible:!outline-none focus-visible:!ring-0"}
+                                        asChild>
+                                        <Link to={`/laporan?url=${popupInfo.link}&point=true`} relative={"path"}>
                                             Lihat Detail
                                         </Link>
                                     </Button>
+                                    <input type="hidden" autoFocus={true} />
                                 </CardFooter>
                             </Card>
                         </Popup>

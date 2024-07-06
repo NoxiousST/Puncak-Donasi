@@ -19,13 +19,15 @@ import LaporanAktivitas from "@/pages/analitik/LaporanAktivitas.tsx"
 import LaporanHarian from "@/pages/analitik/LaporanHarian.tsx"
 import InformasiLetusan from "@/pages/analitik/InformasiLetusan.tsx"
 import Mapbox from "@/pages/map/Mapbox.tsx"
-import 'mapbox-gl/dist/mapbox-gl.css';
+import "mapbox-gl/dist/mapbox-gl.css"
+import DetailLaporan from "@/pages/analitik/DetailLaporan.tsx"
+import AboutUs from "@/pages/AboutUs.tsx"
 
 const router = createBrowserRouter(
     createRoutesFromElements([
-        <Route element={<Layout />}>
+        <Route element={<Layout />} errorElement={<Error />}>
             <Route index element={<App />} errorElement={<Error />} />,
-            <Route path="news" element={<News />}/>
+            <Route path="news" element={<News />} />
             <Route
                 path="news/:newsId"
                 element={<NewsDetail />}
@@ -33,17 +35,18 @@ const router = createBrowserRouter(
                     return supabase.from("news").select(`*, site(id, name, logo)`).eq("id", params.newsId)
                 }}
             />
-            <Route path="tingkat-aktivitas" element={<TingkatAktivitas />}/>
-            <Route path="laporan-aktivitas" element={<LaporanAktivitas />}/>
-            <Route path="laporan-harian" element={<LaporanHarian />}/>
-            <Route path="informasi-letusan" element={<InformasiLetusan />}/>
-            <Route path="map" element={<Mapbox />}/>
-
+            <Route path="tingkat-aktivitas" element={<TingkatAktivitas />} />
+            <Route path="laporan-aktivitas" element={<LaporanAktivitas />} />
+            <Route path="laporan-harian" element={<LaporanHarian />} />
+            <Route path="informasi-letusan" element={<InformasiLetusan />} />
+            <Route path="laporan" element={<DetailLaporan />} />
+            <Route path="map" element={<Mapbox />} />
+            <Route path="tentang-kami" element={<AboutUs />} />
         </Route>,
         <Route path="donasi" element={<DonateCheck />} />,
         <Route path="donasi/checkout" element={<Donate />} />,
-        <Route path="test" element={<InputForm />} />,
-    ]),
+        <Route path="test" element={<InputForm />} />
+    ])
 )
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
@@ -52,5 +55,6 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
             <RouterProvider router={router} />
             <Toaster />
         </ThemeProvider>
-    </React.StrictMode>,
+    </React.StrictMode>
 )
+

@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
-import { Menu, Terminal } from "lucide-react"
+import { Menu, Terminal, Map } from "lucide-react"
 import { Button } from "@/components/ui/button.tsx"
 
 import { LazyLoadImage } from "react-lazy-load-image-component"
@@ -8,16 +8,17 @@ import logon from "@/assets/logon.png"
 
 function App() {
     return (
-        <div className={"overflow-x-hidden"}>
+        <div className={"overflow-x-clip"}>
             {/* Navigation */}
             <nav className="fixed z-50 flex w-full flex-wrap items-center justify-around bg-[#0F1014]/75 px-6 backdrop-blur-2xl backdrop-contrast-50 sm:py-4 lg:px-40">
-                <div className="flex items-center gap-2 pe-8 text-white">
-                    <div className={"flex rounded-full bg-slate-100 p-1"}>
-                        <LazyLoadImage className={"w-5"} src={logon} />
+                <Link to={"/"}>
+                    <div className="flex items-center gap-2 pe-8 text-white">
+                        <div className={"flex rounded-full bg-slate-100 p-1"}>
+                            <LazyLoadImage className={"w-5"} src={logon} />
+                        </div>
+                        <span className="font-logo text-2xl font-bold">Puncak</span>
                     </div>
-                    <span className="font-logo text-2xl font-bold">Puncak</span>
-                </div>
-
+                </Link>
                 <div className="hidden w-auto px-24 md:flex md:items-center">
                     <NavigationMenuDemo />
                 </div>
@@ -171,10 +172,8 @@ function NavigationMenuDemo() {
                     </NavigationMenuContent>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                    <Link to="/news" >
-                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:border-gray-500")}>
-                            Berita & Informasi
-                        </NavigationMenuLink>
+                    <Link to="/news">
+                        <NavigationMenuLink className={cn(navigationMenuTriggerStyle(), "bg-transparent hover:border-gray-500")}>Berita & Informasi</NavigationMenuLink>
                     </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
@@ -183,15 +182,13 @@ function NavigationMenuDemo() {
                         <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-2">
                             <li className="row-span-2">
                                 <NavigationMenuLink asChild>
-                                    <a
-                                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-[#2d303b]/30 to-[#2d303b]/75 p-6 no-underline outline-none focus:shadow-md"
-                                        href="/">
-                                        <Terminal className="h-6 w-6" />
-                                        <div className="mb-2 mt-4 text-lg font-medium">shadcn/ui</div>
-                                        <p className="text-sm leading-tight text-muted-foreground">
-                                            Beautifully designed components that you can copy and paste into your apps.
-                                        </p>
-                                    </a>
+                                    <Link
+                                        to={"map"}
+                                        className="flex h-full w-full select-none flex-col justify-end rounded-md bg-gradient-to-b from-[#2d303b]/30 to-[#2d303b]/75 p-6 no-underline outline-none focus:shadow-md">
+                                        <Map className="h-6 w-6" />
+                                        <div className="mb-2 mt-4 text-lg font-medium">Peta Interaktif</div>
+                                        <p className="text-sm leading-tight text-muted-foreground">Representasi data geografis berbasis web yang dinamis tentang gunung berapi di Indonesia.</p>
+                                    </Link>
                                 </NavigationMenuLink>
                             </li>
                             <ListItem href="/tingkat-aktivitas" title="Tingkat Aktivitas">
