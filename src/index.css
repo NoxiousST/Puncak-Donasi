@@ -103,3 +103,7 @@
     height: 24px;
     width: 24px;
 }
+
+.alpha-1 {
+    opacity: 1 !important;
+}

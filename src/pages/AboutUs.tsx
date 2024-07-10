@@ -84,8 +84,9 @@ export default function AboutUs() {
                 </div>
                 <div className={"flex px-24 w-full justify-between"}>
                     <LazyLoadImage className={"h-80 rounded-lg shadow-xl shadow-gray-500/50"} src={"https://www.gulf-insider.com/wp-content/uploads/2022/04/istockphoto-1139776668-612x612-1.jpg"} />
-                    <div className={"flex flex-col text-end w-[36rem] gap-4"}>
+                    <div className={"flex flex-col text-end w-[36rem] gap-4 items-end"}>
                         <HeartHandshake className={"place-self-end stroke-red-500"} size={56} strokeWidth={2.5} />
+                        <Separator className={"h-1.5 w-36 rounded-full bg-rose-500"} />
                         <text className={"text-4xl font-bold"}>Bagaimana Anda Dapat Membantu</text>
                         <text className={" leading-relaxed"}>
                             Sumbangan Anda membuat perbedaan. Setiap kontribusi, berapa pun besarnya, membantu mendukung tanggap darurat, menyediakan pasokan penting, dan membangun kembali masyarakat.

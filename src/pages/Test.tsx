@@ -1,58 +1,42 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import useEmblaCarousel from "embla-carousel-react"
+import { useCallback, useEffect, useState } from "react"
 
-import { Button } from "@/components/ui/button"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { toast } from "@/components/ui/use-toast"
+export default function Test() {
+    const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true });
+    const [scale, setScale] = useState([]);
 
-const FormSchema = z.object({
-    email: z.string().email( {
-        message: "Username must be at least 2 characters.",
-    }),
-})
+    const onSelect = useCallback(() => {
+        if (!emblaApi) return;
+        const snap = emblaApi.scrollSnapList();
+        const selectedIndex = emblaApi.selectedScrollSnap();
+        const newScale = snap.map((_, index) => {
+            return index === selectedIndex ? 1.2 : 1;
+        });
+        setScale(newScale);
+    }, [emblaApi]);
 
-export default function InputForm() {
-    const form = useForm<z.infer<typeof FormSchema>>({
-        resolver: zodResolver(FormSchema),
-        defaultValues: {
-            email: "",
-        },
-    })
-
-    function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
-    }
+    useEffect(() => {
+        if (!emblaApi) return;
+        onSelect();
+        emblaApi.on("select", onSelect);
+        emblaApi.on("scroll", onSelect);
+    }, [emblaApi, onSelect]);
 
     return (
-        <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="w-2/3 space-y-6">
-                <FormField
-                    control={form.control}
-                    name="email"
-                    render={({ field }) => (
-                        <FormItem>
-                            <FormLabel>Email</FormLabel>
-                            <FormControl>
-                                <Input placeholder="example@gmail.com" {...field} />
-                            </FormControl>
-                            <FormDescription>This is your public display name.</FormDescription>
-                            <FormMessage />
-                        </FormItem>
-                    )}
-                />
-                <Button type="submit">Submit</Button>
-            </form>
-        </Form>
-    )
+        <div className="embla" ref={emblaRef}>
+            <div className="embla__container">
+                {["Item 1", "Item 2", "Item 3", "Item 4"].map((item, index) => (
+                    <div
+                        className="embla__slide"
+                        key={index}
+                        style={{ transform: `scale(${scale[index]})` }}
+                    >
+                        {item}
+                    </div>
+                ))}
+            </div>
+        </div>
+    );
 }

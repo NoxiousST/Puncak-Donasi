@@ -12,7 +12,7 @@ import { Elements } from "@stripe/react-stripe-js"
 
 import StripeForm from "@/components/StripeForm.tsx"
 import logon from "@/assets/logon.png"
-import { useLocation } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import { NumericFormat } from "react-number-format"
 import { z } from "zod"
 import { useForm } from "react-hook-form"
@@ -36,11 +36,12 @@ export default function Donate() {
     const [clientSecret, setClientSecret] = useState("")
 
     useEffect(() => {
+        console.log("Creating Payment Intent...")
         axios
             .post("https://apipuncak.vercel.app/create-payment-intent", { name, email, amount, note })
             .then((res) => setClientSecret(res.data.client_secret))
             .catch((error) => console.log(error.response))
-    }, [name, email, amount, note])
+    }, [])
 
     const appearance: Appearance = {
         theme: "night",
@@ -100,12 +101,12 @@ export default function Donate() {
 
     return (
         <div className={"relative flex min-h-screen font-cera"}>
-            <div className={"absolute rounded-full p-6"}>
+            <Link to={"/"} className={"absolute rounded-full m-6"}>
                 <Avatar className={"h-9 w-9 bg-slate-100 p-1"}>
                     <AvatarImage src={logon} alt="@shadcn" />
                     <AvatarFallback>DN</AvatarFallback>
                 </Avatar>
-            </div>
+            </Link>
             <div className={"flex basis-7/12 justify-end bg-[radial-gradient(circle_at_top_left,_#373b46,_#1b1d25)] p-16"}>
                 <div className={"flex w-9/12 flex-col"}>
                     <h1 className={"text-3xl font-medium"}>Detail Pembayaran</h1>

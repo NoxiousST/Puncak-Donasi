@@ -12,7 +12,6 @@ import NewsDetail from "@/pages/NewsDetail.tsx"
 import Layout from "@/Layout.tsx"
 import supabase from "@/lib/supabase.ts"
 import App from "@/pages/App.tsx"
-import InputForm from "@/pages/Test.tsx"
 import DonateCheck from "@/pages/DonateCheck.tsx"
 import TingkatAktivitas from "@/pages/analitik/TingkatAktivitas.tsx"
 import LaporanAktivitas from "@/pages/analitik/LaporanAktivitas.tsx"
@@ -20,12 +19,19 @@ import LaporanHarian from "@/pages/analitik/LaporanHarian.tsx"
 import InformasiLetusan from "@/pages/analitik/InformasiLetusan.tsx"
 import Mapbox from "@/pages/map/Mapbox.tsx"
 import "mapbox-gl/dist/mapbox-gl.css"
-import DetailLaporan from "@/pages/analitik/DetailLaporan.tsx"
+import DetailLaporanAktivitas from "@/pages/analitik/DetailLaporanAktivitas.tsx"
 import AboutUs from "@/pages/AboutUs.tsx"
+import { Provider } from "react-redux"
+import store from "@/redux/store.ts"
+import Test from "@/pages/Test.tsx"
+import Thank from "@/pages/Thank.tsx"
+import DetailLaporanLetsuan from "@/pages/analitik/DetailLaporanLetusan.tsx"
+import DonateSearch from "@/pages/map/DonateSearch.tsx"
 
 const router = createBrowserRouter(
     createRoutesFromElements([
         <Route element={<Layout />} errorElement={<Error />}>
+
             <Route index element={<App />} errorElement={<Error />} />,
             <Route path="news" element={<News />} />
             <Route
@@ -35,26 +41,30 @@ const router = createBrowserRouter(
                     return supabase.from("news").select(`*, site(id, name, logo)`).eq("id", params.newsId)
                 }}
             />
-            <Route path="tingkat-aktivitas" element={<TingkatAktivitas />} />
-            <Route path="laporan-aktivitas" element={<LaporanAktivitas />} />
-            <Route path="laporan-harian" element={<LaporanHarian />} />
-            <Route path="informasi-letusan" element={<InformasiLetusan />} />
-            <Route path="laporan" element={<DetailLaporan />} />
-            <Route path="map" element={<Mapbox />} />
+            <Route path="analitik/tingkat-aktivitas" element={<TingkatAktivitas />} />
+            <Route path="analitik/laporan-aktivitas" element={<LaporanAktivitas />} />
+            <Route path="analitik/laporan-harian" element={<LaporanHarian />} />
+            <Route path="analitik/informasi-letusan" element={<InformasiLetusan />} />
+            <Route path="analitik/laporan-aktivitas/laporan" element={<DetailLaporanAktivitas />} />
+            <Route path="analitik/informasi-letusan/laporan" element={<DetailLaporanLetsuan />} />
+            <Route path="analitik" element={<Mapbox />} />
             <Route path="tentang-kami" element={<AboutUs />} />
+            <Route path="thank" element={<Thank />} />
+            <Route path="pencarian" element={<DonateSearch />} />
         </Route>,
         <Route path="donasi" element={<DonateCheck />} />,
         <Route path="donasi/checkout" element={<Donate />} />,
-        <Route path="test" element={<InputForm />} />
-    ])
+        <Route path="test" element={<Test />} />,
+    ]),
 )
 
 ReactDOM.createRoot(document.getElementById("root")!).render(
     <React.StrictMode>
-        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-            <RouterProvider router={router} />
-            <Toaster />
-        </ThemeProvider>
-    </React.StrictMode>
+        <Provider store={store}>
+            <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
+                <RouterProvider router={router} />
+                <Toaster />
+            </ThemeProvider>
+        </Provider>
+    </React.StrictMode>,
 )
-

@@ -1,12 +1,25 @@
-import Map, { FullscreenControl, GeolocateControl, MapRef, Marker, NavigationControl, Popup, ScaleControl } from "react-map-gl"
-import { useEffect, useMemo, useRef, useState } from "react"
-import volcano from "@/assets/volcano.png"
+import React, { useEffect, useMemo, useRef, useState } from "react"
+import Map, {
+    FullscreenControl,
+    GeolocateControl,
+    MapRef,
+    Marker,
+    NavigationControl,
+    Popup,
+    ScaleControl,
+    Source
+} from "react-map-gl"
 import { LazyLoadImage } from "react-lazy-load-image-component"
-import axios from "axios"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card.tsx"
-import { Button } from "@/components/ui/button.tsx"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Link } from "react-router-dom"
 import { CircleAlert } from "lucide-react"
+import { fetchLaporan } from "@/redux/laporanSlice"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "@/redux/store"
+import volcano from "@/assets/volcano.png"
+import outdoors from "@/assets/outdoors.png"
+import satelite from "@/assets/satelite.png"
 
 type Mount = {
     name: string
@@ -16,81 +29,86 @@ type Mount = {
     longitude: number
     link: string
     laporan: {
-        image: string,
+        image: string
         visual: string
         gempa: string
-        rekomendasi: string,
+        rekomendasi: string
     }
 }
 
-type AktivitasResponse = {
-    status: string
-    description: string
-    count: number
-    mounts: Mount[]
-}
+const Mapbox: React.FC = () => {
+    const mapRef = useRef<MapRef | null>(null)
+    const [mapStyle, setMapStyle] = useState("outdoors-v12")
+    const [popupInfo, setPopupInfo] = useState<Mount | null>(null)
 
-export default function Mapbox() {
-    const [items, setItems] = useState<AktivitasResponse[]>([])
-    const [popupInfo, setPopupInfo] = useState<Mount>(null)
-    const mapRef = useRef<MapRef>()
+    const dispatch = useDispatch<AppDispatch>()
+    const laporanState = useSelector((state: RootState) => state.laporan)
+
+    console.log(`this ${laporanState.data}`)
 
     useEffect(() => {
-        async function fetchData() {
-            const response = await axios.get("http://localhost:3000/mapbox")
-            console.log(response.data.aktivitas)
-            setItems(response.data.aktivitas)
-        }
+        dispatch(fetchLaporan())
+    }, [dispatch])
 
-        fetchData().finally()
-    }, [])
+    const handleMarkerClick = (mount: Mount) => (e: unknown) => {
+        // @ts-expect-error MarkerEvent
+        e.originalEvent?.stopPropagation()
+        setPopupInfo(mount)
+        mapRef.current?.flyTo({
+            center: [mount.longitude, mount.latitude + 0.455],
+            duration: 3000,
+            zoom: 8,
+        })
+    }
+
+    const handlePopupClose = () => setPopupInfo(null)
 
     const markers = useMemo(
         () =>
-            items.map((item) =>
-                item.mounts.map((mount) => {
-                    if (mount.latitude)
-                        return (
-                            <div>
-                                <Marker
-                                    key={mount.name}
-                                    longitude={mount.longitude}
-                                    latitude={mount.latitude}
-                                    onClick={(e) => {
-                                        e.originalEvent.stopPropagation()
-                                        setPopupInfo(mount)
-                                        mapRef.current?.flyTo({
-                                            center: [mount.longitude, mount.latitude + 0.455],
-                                            duration: 3000,
-                                            zoom: 8,
-                                        })
-                                    }}
-                                    style={{ cursor: "pointer" }}>
-                                    <LazyLoadImage src={volcano} className={"h-12 w-12"} />
-                                </Marker>
-                            </div>
-                        )
-                }),
-            ),
-        [items],
+            laporanState.data?.flatMap((item) =>
+                item.mounts.map(
+                    (mount) =>
+                        mount.latitude && (
+                            <Marker
+                                key={mount.name}
+                                longitude={mount.longitude}
+                                latitude={mount.latitude}
+                                onClick={handleMarkerClick(mount)}
+                                style={{ cursor: "pointer" }}>
+                                <LazyLoadImage src={volcano} className="h-12 w-12" />
+                            </Marker>
+                        ),
+                ),
+            ) || [],
+        [laporanState.data],
     )
 
+    if (!laporanState.data) {
+        if (laporanState.loading) {
+            return <div className="bg-emerald-500 py-24 text-4xl font-bold text-white">Loading...</div>
+        }
+        if (laporanState.error) {
+            return <div className="bg-red-500 py-24 text-4xl font-bold text-white">Error: {laporanState.error}</div>
+        }
+    }
+
     return (
-        <div className={"flex h-screen pt-[74px]"}>
-            <div className={"font-varela h-full max-w-80 overflow-y-auto bg-[#0F1014]/75 px-8 py-4 backdrop-blur-2xl backdrop-contrast-50"}>
-                {items.map((item) => (
-                    <div className={"w-full max-w-80"}>
-                        <div className={"flex items-center gap-2 py-1 text-lg font-bold"}>
+        <div className="flex h-screen pt-[74px]">
+            <div className="h-full max-w-80 overflow-y-auto bg-[#0F1014]/75 px-8 py-4 font-varela backdrop-blur-2xl backdrop-contrast-50">
+                {laporanState.data?.map((item) => (
+                    <div key={item.status} className="w-full max-w-80">
+                        <div className="flex items-center gap-2 py-1 text-lg font-bold">
                             {item.status}
                             <CircleAlert size={20} />
                         </div>
-                        <div className={""}>
+                        <div>
                             {item.mounts.length === 0 ? (
-                                <div className={"p-2 text-gray-500 text-sm"}>Tidak ada gunung api</div>
+                                <div className="p-2 text-sm text-gray-500">Tidak ada gunung api</div>
                             ) : (
                                 item.mounts.map((mount) => (
                                     <div
-                                        className={"text-sm cursor-pointer rounded bg-transparent p-2 font-medium text-gray-300 hover:bg-[#2d303b]"}
+                                        key={mount.name}
+                                        className="cursor-pointer rounded bg-transparent p-2 text-sm font-medium text-gray-300 hover:bg-[#2d303b]"
                                         onClick={() => {
                                             setPopupInfo(mount)
                                             mapRef.current?.flyTo({
@@ -99,7 +117,7 @@ export default function Mapbox() {
                                                 zoom: 10,
                                             })
                                         }}>
-                                        {mount.name} <span className={" font-normal text-gray-500"}> - {mount.location}</span>
+                                        {mount.name} <span className="font-normal text-gray-500"> - {mount.location}</span>
                                     </div>
                                 ))
                             )}
@@ -107,70 +125,87 @@ export default function Mapbox() {
                     </div>
                 ))}
             </div>
-            <div className={"flex-grow"}>
+            <div className="relative flex-grow">
                 <Map
                     ref={mapRef}
                     reuseMaps
-                    mapboxAccessToken={"pk.eyJ1Ijoibm94aW91c3N0IiwiYSI6ImNseTh1eWk3YjBrMDAybXNhMTQ0eHUxZW0ifQ.MKCw5WqM0SnV9TeU97jYDQ"}
+                    styleDiffing
+                    mapboxAccessToken="pk.eyJ1Ijoibm94aW91c3N0IiwiYSI6ImNsY3VsbmFnYTA2amczdW83cDEyNW10a3MifQ.MyxSDj1DbhKZ7IvDm76G8w"
                     initialViewState={{
                         latitude: -3,
                         longitude: 117,
                         zoom: 5,
                     }}
                     style={{ width: "100%", height: "100%" }}
-                    mapStyle="mapbox://styles/mapbox/outdoors-v12"
+                    mapStyle={`mapbox://styles/mapbox/${mapStyle}`}
                     minZoom={1}
                     maxZoom={16}
                     maxBounds={[
-                        [90.0, -10.0],
-                        [140.0, 10.0],
-                    ]}>
+                        [85.02360264078544, -15.026506873645772],
+                        [145.01631002070235, 10.04864857868158],
+                    ]}
+                    maxPitch={75}
+                    terrain={{source: 'mapbox-dem', exaggeration: 1.5}}>
                     <GeolocateControl />
                     <FullscreenControl />
                     <NavigationControl />
                     <ScaleControl />
-
-                    {markers.map((mark) => mark)}
+                    <Source
+                        id="mapbox-dem"
+                        type="raster-dem"
+                        url="mapbox://mapbox.mapbox-terrain-dem-v1"
+                        tileSize={512}
+                        maxzoom={14}
+                    />
+                    {markers.map((marker) => marker)}
 
                     {popupInfo && (
                         <Popup
-                            anchor={"bottom"}
+                            anchor="bottom"
                             style={{ maxWidth: "390px", width: "fit-content", minWidth: "280px" }}
-                            longitude={Number(popupInfo.longitude)}
-                            latitude={Number(popupInfo.latitude)}
-                            onClose={() => setPopupInfo(null)}>
-                            <Card className={"font-varela border-none !bg-transparent"}>
-                                <CardHeader className={"p-2"}>
-                                    <CardTitle className={"text-xl"}>Gunung {popupInfo.name}</CardTitle>
+                            longitude={popupInfo.longitude}
+                            latitude={popupInfo.latitude}
+                            onClose={handlePopupClose}>
+                            <Card className="border-none !bg-transparent font-varela">
+                                <CardHeader className="p-2">
+                                    <CardTitle className="text-xl">Gunung {popupInfo.name}</CardTitle>
                                     <CardDescription>{popupInfo.status}</CardDescription>
                                 </CardHeader>
-                                <CardContent className={"max-w-72 p-2"}>
-                                    <div>
-                                        <LazyLoadImage src={popupInfo.laporan.image} />
-                                        <div className={"grid"}>
-                                            <div className={"flex flex-col py-1"}>
-                                                <p className={"font-semibold uppercase text-gray-400"}>Visual</p>
-                                                <p className={""}>{popupInfo.laporan.visual}</p>
-                                            </div>
+                                <CardContent className="max-w-72 p-2">
+                                    <LazyLoadImage src={popupInfo.laporan.image} />
+                                    <div className="grid">
+                                        <div className="flex flex-col py-1">
+                                            <p className="font-semibold uppercase text-gray-400">Visual</p>
+                                            <p>{popupInfo.laporan.visual}</p>
                                         </div>
                                     </div>
                                 </CardContent>
-                                <CardFooter className={"flex justify-end p-2"}>
+                                <CardFooter className="flex justify-end p-2">
                                     <Button
-                                        type={"button"}
-                                        className={"!bg-blue-500 font-semibold transition-all hover:ring-4 focus-visible:!border-none focus-visible:!outline-none focus-visible:!ring-0"}
+                                        type="button"
+                                        className="!bg-blue-500 font-semibold transition-all hover:ring-4 focus-visible:!border-none focus-visible:!outline-none focus-visible:!ring-0"
                                         asChild>
-                                        <Link to={`/laporan?url=${popupInfo.link}&point=true`} relative={"path"}>
+                                        <Link to={`/laporan?url=${popupInfo.link}&point=true`} relative="path">
                                             Lihat Detail
                                         </Link>
                                     </Button>
-                                    <input type="hidden" autoFocus={true} />
+                                    <input type="hidden" autoFocus />
                                 </CardFooter>
                             </Card>
                         </Popup>
                     )}
+                    <div className={"absolute top-0 z-50 m-3 aspect-square rounded-lg bg-gray-200 p-1"}>
+                        <LazyLoadImage
+                            onClick={() => (mapStyle === "outdoors-v12" ? setMapStyle("satellite-v9") : setMapStyle("outdoors-v12"))}
+                            className={"object-cover h-full w-24 cursor-pointer rounded-lg"}
+                            src={mapStyle === "outdoors-v12" ? satelite : outdoors}
+                        />
+                    </div>
                 </Map>
+
             </div>
         </div>
     )
 }
+
+export default Mapbox
