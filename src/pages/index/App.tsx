@@ -45,7 +45,7 @@ function App() {
 
     useEffect(() => {
         async function getAnalytic() {
-            const response = await axios.get(`${SERVER}/informasi-letusan?page=1`)
+            const response = await axios.get(`https://apipuncak.vercel.app/informasi-letusan?page=1`)
             console.log(response)
             setAnalytic(response.data.data[0])
         }
@@ -55,7 +55,7 @@ function App() {
 
     useEffect(() => {
         async function getPayment() {
-            const response = await axios.get(`${SERVER}/payments`)
+            const response = await axios.get(`https://apipuncak.vercel.app/payments`)
             console.log(response)
             setPayment(response.data.paymentList)
         }

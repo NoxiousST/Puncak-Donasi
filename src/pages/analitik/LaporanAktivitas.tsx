@@ -43,7 +43,7 @@ export default function LaporanAktivitas() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`${SERVER}/laporan?page=${page}`)
+            const response = await axios.get(`https://apipuncak.vercel.app/laporan?page=${page}`)
             console.log(response)
             setItem(response.data.data)
         }

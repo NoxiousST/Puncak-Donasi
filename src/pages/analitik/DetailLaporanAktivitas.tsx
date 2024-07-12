@@ -43,7 +43,7 @@ export default function DetailLaporanAktivitas() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`${SERVER}/data-laporan-aktivitas?url=${url}&point=${point}`)
+            const response = await axios.get(`https://apipuncak.vercel.app/data-laporan-aktivitas?url=${url}&point=${point}`)
             console.log(response.data.data)
             setItem(response.data.data)
             setPopupInfo(response.data.data)

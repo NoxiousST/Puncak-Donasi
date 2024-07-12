@@ -20,7 +20,7 @@ export default function LaporanHarian() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`${SERVER}/laporan-harian`)
+            const response = await axios.get(`https://apipuncak.vercel.app/laporan-harian`)
             console.log(response)
             setItem(response.data.data)
         }

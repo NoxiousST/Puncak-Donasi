@@ -30,7 +30,7 @@ export default function TingkatAktivitas() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`${SERVER}/tingkat-aktivitas`)
+            const response = await axios.get(`https://apipuncak.vercel.app/tingkat-aktivitas`)
             console.log(response)
             setItem(response.data.data)
         }

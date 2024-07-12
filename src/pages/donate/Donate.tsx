@@ -21,7 +21,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/
 import { SERVER } from "@/lib/utils.ts"
 
 const initStripe = async () => {
-    const res = await axios.get(`${SERVER}/publishkey`)
+    const res = await axios.get(`https://apipuncak.vercel.app/publishkey`)
     const publishableKey = await res.data.publishable_key
     console.log(publishableKey)
     return loadStripe(publishableKey)
@@ -39,7 +39,7 @@ export default function Donate() {
     useEffect(() => {
         console.log("Creating Payment Intent...")
         axios
-            .post(`${SERVER}/create-payment-intent`, { name, email, amount, note })
+            .post(`https://apipuncak.vercel.app/create-payment-intent`, { name, email, amount, note })
             .then((res) => setClientSecret(res.data.client_secret))
             .catch((error) => console.log(error.response))
     }, [])

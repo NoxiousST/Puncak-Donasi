@@ -11,7 +11,7 @@ export const DonationProvider = ({ children }) => {
 
     useEffect(() => {
         async function getPayment() {
-            const response = await axios.get(`${SERVER}/payments`)
+            const response = await axios.get(`https://apipuncak.vercel.app/payments`)
             setPayment(response.data.paymentList)
         }
 

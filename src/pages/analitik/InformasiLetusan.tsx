@@ -30,7 +30,7 @@ export default function InformasiLetusan() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`${SERVER}/informasi-letusan?page=${page}`)
+            const response = await axios.get(`https://apipuncak.vercel.app/informasi-letusan?page=${page}`)
             console.log(response)
             setItem(response.data.data)
         }

@@ -21,7 +21,7 @@ export default function DetailLaporanLetsuan() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.get(`${SERVER}/data-laporan-letusan?url=${url}`)
+                const response = await axios.get(`https://apipuncak.vercel.app/data-laporan-letusan?url=${url}`)
                 console.log(response.request)
                 setItem(response.data.data)
                 setPopupInfo(response.data.data)

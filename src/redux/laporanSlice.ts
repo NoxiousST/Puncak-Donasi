@@ -39,7 +39,7 @@ const initialState: AktivitasState = {
 export const fetchLaporan = createAsyncThunk(
     'laporan/fetchLaporan',
     async () => {
-        const response = await axios.get(`${SERVER}//mapbox`);
+        const response = await axios.get(`https://apipuncak.vercel.app/mapbox`);
         return response.data.aktivitas as AktivitasResponse[];
     }
 );
