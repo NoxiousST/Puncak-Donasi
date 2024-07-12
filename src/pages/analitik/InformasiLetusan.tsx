@@ -6,6 +6,7 @@ import { Link } from "react-router-dom"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination.tsx"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb.tsx"
+import { SERVER } from "@/lib/utils.ts"
 
 interface TimelineLetusanItem {
     type: "timeline-item"
@@ -29,7 +30,7 @@ export default function InformasiLetusan() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`http://localhost:3000/informasi-letusan?page=${page}`)
+            const response = await axios.get(`${SERVER}/informasi-letusan?page=${page}`)
             console.log(response)
             setItem(response.data.data)
         }

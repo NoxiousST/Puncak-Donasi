@@ -10,12 +10,28 @@ export interface Intent {
     email: string
     name: string
     note: string
+    display: string
 }
 
 export interface Payment {
     count: number
     total: number
     intents: Intent[]
+}
+
+export type Mount = {
+    name: string
+    status: string
+    location: string
+    latitude: number
+    longitude: number
+    link: string
+    laporan: {
+        image: string
+        visual: string
+        gempa: string
+        rekomendasi: string
+    }
 }
 
 export interface LaporanLetusan {

@@ -7,6 +7,7 @@ import { LazyLoadImage } from "react-lazy-load-image-component"
 import logon from "@/assets/logon.png"
 
 function App() {
+
     return (
         <div className={"overflow-x-clip"}>
             <ScrollToTop />
@@ -94,11 +95,11 @@ function Navigation() {
         <NavigationMenu className={"font-cera"}>
             <NavigationMenuList>
                 <NavigationMenuItem>
-                    <NavigationMenuTrigger className={"bg-transparent hover:border-gray-500"}>Getting started</NavigationMenuTrigger>
+                    <NavigationMenuTrigger className={"bg-transparent hover:border-gray-500"}>Paltform</NavigationMenuTrigger>
                     <NavigationMenuContent>
                         <ul className="grid gap-3 p-6 md:w-[400px] lg:w-[500px] lg:grid-cols-[.75fr_1fr]">
                             <li className="row-span-3">
-                                <NavigationMenuLink asChild>
+                                <NavigationMenuLink>
                                     <a
                                         className="flex h-full w-full select-none flex-col justify-end rounded-md bg-[linear-gradient(to_bottom,#2d303b,#0000,#2d303b)] hover:bg-[bottom_center] bg-[auto_200%] transition-all duration-500  p-6 no-underline outline-none focus:shadow-md"
                                         href="/">

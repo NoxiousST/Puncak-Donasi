@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge.tsx"
 import { Separator } from "@/components/ui/separator.tsx"
 import { BarChart3, HeartHandshake, Map, Rss } from "lucide-react"
 import { LazyLoadImage } from "react-lazy-load-image-component"
+import aids from "@/assets/aids.jpg"
 
 export default function AboutUs() {
     return (
@@ -83,7 +84,7 @@ export default function AboutUs() {
                     </div>
                 </div>
                 <div className={"flex px-24 w-full justify-between"}>
-                    <LazyLoadImage className={"h-80 rounded-lg shadow-xl shadow-gray-500/50"} src={"https://www.gulf-insider.com/wp-content/uploads/2022/04/istockphoto-1139776668-612x612-1.jpg"} />
+                    <LazyLoadImage className={"h-80 rounded-lg shadow-xl shadow-gray-500/50"} src={aids} />
                     <div className={"flex flex-col text-end w-[36rem] gap-4 items-end"}>
                         <HeartHandshake className={"place-self-end stroke-red-500"} size={56} strokeWidth={2.5} />
                         <Separator className={"h-1.5 w-36 rounded-full bg-rose-500"} />

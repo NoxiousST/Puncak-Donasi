@@ -5,9 +5,11 @@ import { Text, ShieldAlert } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import Map, { MapRef, Marker, Popup } from "react-map-gl"
-import volcano from "@/assets/volcano.png"
+import volcano from "@/assets/orange.png"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb.tsx"
 import { LaporanLetusan } from "@/lib/type.ts"
+import classNames from "classnames"
+import { SERVER } from "@/lib/utils.ts"
 
 export default function DetailLaporanLetsuan() {
     const [item, setItem] = useState<LaporanLetusan>()
@@ -19,7 +21,7 @@ export default function DetailLaporanLetsuan() {
     useEffect(() => {
         async function fetchData() {
             try {
-                const response = await axios.get(`http://localhost:3000/data-laporan-letusan?url=${url}`)
+                const response = await axios.get(`${SERVER}/data-laporan-letusan?url=${url}`)
                 console.log(response.request)
                 setItem(response.data.data)
                 setPopupInfo(response.data.data)
@@ -57,12 +59,12 @@ export default function DetailLaporanLetsuan() {
                         </BreadcrumbItem>
                         <BreadcrumbSeparator />
                         <BreadcrumbItem>
-                            <BreadcrumbLink href="#"> Laporan</BreadcrumbLink>
+                            <BreadcrumbLink href="#">Laporan</BreadcrumbLink>
                         </BreadcrumbItem>
                     </BreadcrumbList>
                 </Breadcrumb>
                 <h1 className={"font-cera text-5xl font-bold"}>Detail Laporan Letusan</h1>
-                <p className={"text-gray-400"}>Informasi terstruktur mengenai tingkat aktivitas gunung api</p>
+                <p className={"text-gray-400"}>Informasi dan rekomendasi mengenai erupsi gunung api</p>
             </section>
             <div className={"flex justify-center gap-20 px-48 py-20"}>
                 {item.latitude && (
@@ -133,12 +135,17 @@ export default function DetailLaporanLetsuan() {
                         </div>
                     </div>
                     <Card className={"w-[32rem] bg-[#2d303b] font-varela"}>
-                        <CardHeader>
-                            <CardDescription className={"py-1"}>
-                                <LazyLoadImage src={item.image} className={"rounded-lg"} />
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className={"flex gap-3"}>
+                        {item.image && (
+                            <CardHeader>
+                                <CardDescription className={"py-1"}>
+                                    <LazyLoadImage src={item.image} className={"rounded-lg"} />
+                                </CardDescription>
+                            </CardHeader>
+                        )}
+                        <CardContent
+                            className={classNames("flex gap-3", {
+                                "pb-0 pt-6": !item.image,
+                            })}>
                             <div>
                                 <Text size={48} />
                             </div>

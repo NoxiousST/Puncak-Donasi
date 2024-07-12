@@ -5,7 +5,7 @@ import { BarChart3, Cloudy, Fullscreen, ShieldAlert } from "lucide-react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card.tsx"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import Map, { MapRef, Marker, Popup } from "react-map-gl"
-import volcano from "@/assets/volcano.png"
+import volcano from "@/assets/orange.png"
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -13,6 +13,7 @@ import {
     BreadcrumbList,
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb.tsx"
+import { SERVER } from "@/lib/utils.ts"
 
 interface Laporan {
     level: string
@@ -21,6 +22,7 @@ interface Laporan {
     time: string
     author: string
     geo: string
+    code: string
     laporan: {
         image: string
         visual: string
@@ -41,7 +43,7 @@ export default function DetailLaporanAktivitas() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`http://localhost:3000/data-laporan-aktivitas?url=${url}&point=${point}`)
+            const response = await axios.get(`${SERVER}/data-laporan-aktivitas?url=${url}&point=${point}`)
             console.log(response.data.data)
             setItem(response.data.data)
             setPopupInfo(response.data.data)
@@ -216,9 +218,9 @@ export default function DetailLaporanAktivitas() {
                     </Card>
                 </div>
             </div>
-            <div className={"mt-16 flex justify-center rounded-lg bg-[#2d303b]/75 p-4"}>
+            <div className={"w-fit place-self-center mb-16 rounded-lg bg-[#2d303b]/75 p-4"}>
                 <LazyLoadImage className={"rounded"}
-                               src={`https://magma.vsi.esdm.go.id/img/eqhist/${item.name.slice(0, 3).toUpperCase()}.png`} />
+                               src={`https://magma.vsi.esdm.go.id/img/eqhist/${item.code}.png`} />
             </div>
         </div>
     )

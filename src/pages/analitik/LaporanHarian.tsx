@@ -5,8 +5,9 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbS
 import { Link } from "react-router-dom"
 import date from "date-and-time"
 import id from 'date-and-time/locale/id';
+import { SERVER } from "@/lib/utils.ts"
 
-interface VolcanoReport {
+interface TabelLaporan {
     no: string
     gunung_api: string
     visual: string[]
@@ -15,11 +16,11 @@ interface VolcanoReport {
 }
 
 export default function LaporanHarian() {
-    const [item, setItem] = useState<VolcanoReport[]>([])
+    const [item, setItem] = useState<TabelLaporan[]>([])
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get("http://localhost:3000/laporan-harian")
+            const response = await axios.get(`${SERVER}/laporan-harian`)
             console.log(response)
             setItem(response.data.data)
         }
@@ -29,7 +30,7 @@ export default function LaporanHarian() {
 
     const today = new Date()
     date.locale(id)
-    const formatToday = date.format(today, "DD, dddd MMMM YYYY")
+    const formatToday = date.format(today, "dddd,DD  MMMM YYYY")
 
     return (
         <div className={"grid gap-8 bg-[radial-gradient(circle_at_top,_#2d303bcc,_#0F1014)]"}>

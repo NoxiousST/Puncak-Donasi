@@ -1,18 +1,17 @@
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom"
 import React from "react"
 import ReactDOM from "react-dom/client"
-
-import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from "react-router-dom"
 import "./index.css"
 import Error from "@/error.tsx"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster.tsx"
-import Donate from "@/pages/Donate.tsx"
+import Donate from "@/pages/donate/Donate.tsx"
 import News from "@/pages/News.tsx"
 import NewsDetail from "@/pages/NewsDetail.tsx"
 import Layout from "@/Layout.tsx"
 import supabase from "@/lib/supabase.ts"
-import App from "@/pages/App.tsx"
-import DonateCheck from "@/pages/DonateCheck.tsx"
+import App from "@/pages/index/App.tsx"
+import DonateCheck from "@/pages/donate/DonateCheck.tsx"
 import TingkatAktivitas from "@/pages/analitik/TingkatAktivitas.tsx"
 import LaporanAktivitas from "@/pages/analitik/LaporanAktivitas.tsx"
 import LaporanHarian from "@/pages/analitik/LaporanHarian.tsx"
@@ -24,14 +23,14 @@ import AboutUs from "@/pages/AboutUs.tsx"
 import { Provider } from "react-redux"
 import store from "@/redux/store.ts"
 import Test from "@/pages/Test.tsx"
-import Thank from "@/pages/Thank.tsx"
+import Thank from "@/pages/donate/Thank.tsx"
 import DetailLaporanLetsuan from "@/pages/analitik/DetailLaporanLetusan.tsx"
-import DonateSearch from "@/pages/map/DonateSearch.tsx"
+import DonateSearch from "@/pages/donate/DonateSearch.tsx"
+import { DonationProvider } from "./pages/donate/DonationProvider"
 
 const router = createBrowserRouter(
     createRoutesFromElements([
         <Route element={<Layout />} errorElement={<Error />}>
-
             <Route index element={<App />} errorElement={<Error />} />,
             <Route path="news" element={<News />} />
             <Route
@@ -49,8 +48,15 @@ const router = createBrowserRouter(
             <Route path="analitik/informasi-letusan/laporan" element={<DetailLaporanLetsuan />} />
             <Route path="analitik" element={<Mapbox />} />
             <Route path="tentang-kami" element={<AboutUs />} />
-            <Route path="thank" element={<Thank />} />
-            <Route path="pencarian" element={<DonateSearch />} />
+            <Route path="donasi/success" element={<Thank />} />
+            <Route
+                path="pencarian"
+                element={
+                    <DonationProvider>
+                        <DonateSearch />
+                    </DonationProvider>
+                }
+            />
         </Route>,
         <Route path="donasi" element={<DonateCheck />} />,
         <Route path="donasi/checkout" element={<Donate />} />,

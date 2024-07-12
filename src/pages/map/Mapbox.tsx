@@ -1,14 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from "react"
-import Map, {
-    FullscreenControl,
-    GeolocateControl,
-    MapRef,
-    Marker,
-    NavigationControl,
-    Popup,
-    ScaleControl,
-    Source
-} from "react-map-gl"
+import Map, { FullscreenControl, GeolocateControl, MapRef, Marker, NavigationControl, Popup, ScaleControl, Source } from "react-map-gl"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
@@ -17,34 +8,24 @@ import { CircleAlert } from "lucide-react"
 import { fetchLaporan } from "@/redux/laporanSlice"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/redux/store"
-import volcano from "@/assets/volcano.png"
 import outdoors from "@/assets/outdoors.png"
 import satelite from "@/assets/satelite.png"
-
-type Mount = {
-    name: string
-    status: string
-    location: string
-    latitude: number
-    longitude: number
-    link: string
-    laporan: {
-        image: string
-        visual: string
-        gempa: string
-        rekomendasi: string
-    }
-}
+import red from "@/assets/red.png"
+import orange from "@/assets/orange.png"
+import yellow from "@/assets/yellow.png"
+import green from "@/assets/green.png"
+import { Mount } from "@/lib/type.ts"
+import Error from "@/error.tsx"
+import LoadingScreen from "@/pages/LoadingScreen.tsx"
 
 const Mapbox: React.FC = () => {
     const mapRef = useRef<MapRef | null>(null)
     const [mapStyle, setMapStyle] = useState("outdoors-v12")
     const [popupInfo, setPopupInfo] = useState<Mount | null>(null)
+    const [hoverInfo, setHoverInfo] = useState<Mount | null>(null)
 
     const dispatch = useDispatch<AppDispatch>()
     const laporanState = useSelector((state: RootState) => state.laporan)
-
-    console.log(`this ${laporanState.data}`)
 
     useEffect(() => {
         dispatch(fetchLaporan())
@@ -61,12 +42,25 @@ const Mapbox: React.FC = () => {
         })
     }
 
+    const handleMarkerEnter = (mount: Mount) => (e: unknown) => {
+        // @ts-expect-error MarkerEvent
+        e.originalEvent?.stopPropagation()
+        setHoverInfo(mount)
+    }
+
     const handlePopupClose = () => setPopupInfo(null)
 
     const markers = useMemo(
         () =>
-            laporanState.data?.flatMap((item) =>
-                item.mounts.map(
+            laporanState.data?.flatMap((item) => {
+                const statusMap = {
+                    "Level IV (Awas)": { color: red, zIndex: 10 },
+                    "Level III (Siaga)": { color: orange, zIndex: 8 },
+                    "Level II (Waspada)": { color: yellow, zIndex: 4 },
+                }
+                const defaultStatus = { color: green, zIndex: 0 }
+                const { color: volcanos, zIndex: z } = statusMap[item.status] || defaultStatus
+                return item.mounts.map(
                     (mount) =>
                         mount.latitude && (
                             <Marker
@@ -74,21 +68,25 @@ const Mapbox: React.FC = () => {
                                 longitude={mount.longitude}
                                 latitude={mount.latitude}
                                 onClick={handleMarkerClick(mount)}
-                                style={{ cursor: "pointer" }}>
-                                <LazyLoadImage src={volcano} className="h-12 w-12" />
+                                style={{ cursor: "pointer", zIndex: z }}>
+                                <LazyLoadImage
+                                    onMouseEnter={handleMarkerEnter(mount)}
+                                    onMouseLeave={handleMarkerEnter(null)}
+                                    src={volcanos}
+                                    className="h-12 w-12" />
                             </Marker>
                         ),
-                ),
-            ) || [],
+                )
+            }) || [],
         [laporanState.data],
     )
 
     if (!laporanState.data) {
         if (laporanState.loading) {
-            return <div className="bg-emerald-500 py-24 text-4xl font-bold text-white">Loading...</div>
+            return <LoadingScreen/>
         }
         if (laporanState.error) {
-            return <div className="bg-red-500 py-24 text-4xl font-bold text-white">Error: {laporanState.error}</div>
+            return <Error/>
         }
     }
 
@@ -130,7 +128,7 @@ const Mapbox: React.FC = () => {
                     ref={mapRef}
                     reuseMaps
                     styleDiffing
-                    mapboxAccessToken="pk.eyJ1Ijoibm94aW91c3N0IiwiYSI6ImNsY3VsbmFnYTA2amczdW83cDEyNW10a3MifQ.MyxSDj1DbhKZ7IvDm76G8w"
+                    mapboxAccessToken={import.meta.env.VITE_MAPBOX_KEY}
                     initialViewState={{
                         latitude: -3,
                         longitude: 117,
@@ -145,24 +143,18 @@ const Mapbox: React.FC = () => {
                         [145.01631002070235, 10.04864857868158],
                     ]}
                     maxPitch={75}
-                    terrain={{source: 'mapbox-dem', exaggeration: 1.5}}>
+                    terrain={{ source: "mapbox-dem", exaggeration: 1.5 }}>
                     <GeolocateControl />
                     <FullscreenControl />
                     <NavigationControl />
                     <ScaleControl />
-                    <Source
-                        id="mapbox-dem"
-                        type="raster-dem"
-                        url="mapbox://mapbox.mapbox-terrain-dem-v1"
-                        tileSize={512}
-                        maxzoom={14}
-                    />
+                    <Source id="mapbox-dem" type="raster-dem" url="mapbox://mapbox.mapbox-terrain-dem-v1" tileSize={512} maxzoom={14} />
                     {markers.map((marker) => marker)}
 
                     {popupInfo && (
                         <Popup
                             anchor="bottom"
-                            style={{ maxWidth: "390px", width: "fit-content", minWidth: "280px" }}
+                            style={{ maxWidth: "390px", width: "fit-content", minWidth: "280px", zIndex: 10 }}
                             longitude={popupInfo.longitude}
                             latitude={popupInfo.latitude}
                             onClose={handlePopupClose}>
@@ -185,7 +177,7 @@ const Mapbox: React.FC = () => {
                                         type="button"
                                         className="!bg-blue-500 font-semibold transition-all hover:ring-4 focus-visible:!border-none focus-visible:!outline-none focus-visible:!ring-0"
                                         asChild>
-                                        <Link to={`/laporan?url=${popupInfo.link}&point=true`} relative="path">
+                                        <Link to={`laporan-aktivitas/laporan?url=${popupInfo.link}`} relative="path">
                                             Lihat Detail
                                         </Link>
                                     </Button>
@@ -194,15 +186,30 @@ const Mapbox: React.FC = () => {
                             </Card>
                         </Popup>
                     )}
+
+                    {hoverInfo && !popupInfo && (
+                        <Popup
+                            anchor="bottom"
+                            style={{ maxWidth: "390px", width: "fit-content", minWidth: "200px", zIndex: 10 }}
+                            longitude={hoverInfo.longitude}
+                            latitude={hoverInfo.latitude}
+                            onClose={handlePopupClose}>
+                            <Card className="border-none !bg-transparent font-varela">
+                                <CardHeader className="!p-0">
+                                    <CardTitle className="text-center text-sm">Gunung {hoverInfo.name}</CardTitle>
+                                </CardHeader>
+                                <input type="hidden" autoFocus />
+                            </Card>
+                        </Popup>
+                    )}
                     <div className={"absolute top-0 z-50 m-3 aspect-square rounded-lg bg-gray-200 p-1"}>
                         <LazyLoadImage
                             onClick={() => (mapStyle === "outdoors-v12" ? setMapStyle("satellite-v9") : setMapStyle("outdoors-v12"))}
-                            className={"object-cover h-full w-24 cursor-pointer rounded-lg"}
+                            className={"h-full w-24 cursor-pointer rounded-lg object-cover"}
                             src={mapStyle === "outdoors-v12" ? satelite : outdoors}
                         />
                     </div>
                 </Map>
-
             </div>
         </div>
     )

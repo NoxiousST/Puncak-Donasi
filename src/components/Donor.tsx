@@ -8,6 +8,7 @@ import { Intent, Size } from "@/lib/type.ts"
 import { cn } from "@/lib/utils.ts"
 import classNames from "classnames"
 
+
 export default function Donor({ intent, className, size }: { intent: Intent; className?: string; size?: Size }) {
     let sz = size
     if (!size) sz = Size.Medium
@@ -16,13 +17,13 @@ export default function Donor({ intent, className, size }: { intent: Intent; cla
     const created = date.format(d, "DD/MM/YYYY, HH:mm:ss A")
     return (
         <div className={cn("flex items-center gap-2 rounded-lg bg-[#414550]/15 p-3 shadow-md backdrop-blur-sm backdrop-saturate-100", className)}>
-            <ICDonate amount={intent.amount / 100} sz={size} />
+            <ICDonate amount={intent.amount / 100} className={"w-11"} />
             <div className={classNames("font-semibold text-gray-300 w-full line-clamp-1", {
                     "text-sm": sz === Size.Small,
                     "text-base": sz === Size.Medium,
                     "text-lg": sz === Size.Large,
                 })}>
-                {intent.name}
+                {intent.display}
             </div>
             <div className={"w-full text-end"}>
                 <NumericFormat
@@ -31,7 +32,7 @@ export default function Donor({ intent, className, size }: { intent: Intent; cla
                     prefix={"Rp. "}
                     thousandSeparator={"."}
                     decimalSeparator={","}
-                    className={classNames("w-full text-end font-montserrat font-bold tracking-wide text-blue-400", {
+                    className={classNames("w-full text-end font-montserrat font-bold tracking-wide text-emerald-400", {
                         "text-base": size === Size.Small,
                         "text-lg": size === Size.Medium,
                         "text-xl": size === Size.Large,
@@ -48,9 +49,9 @@ export function DonorSearch({ intent, className }: { intent: Intent; className?:
     const created = date.format(d, "DD/MM/YYYY, HH:mm:ss A")
     return (
         <div className={cn("flex items-center gap-2 rounded-xl bg-[#414550]/25 p-3 shadow-md backdrop-blur-sm backdrop-saturate-100", className)}>
-            <ICDonate amount={intent.amount / 100} sz={Size.Large} />
+            <ICDonate amount={intent.amount / 100} className={"w-16"} />
             <div className={"flex w-full flex-col justify-center"}>
-                <p className={"line-clamp-1 w-full text-xl font-semibold text-gray-300"}>{intent.name}</p>
+                <p className={"line-clamp-1 w-full text-xl font-semibold text-gray-300"}>{intent.display}</p>
                 {intent.note && <article className={"line-clamp-2 prose prose-sm p-0 text-left text-gray-400"}>{intent.note.trim()}</article>}
             </div>
 
@@ -142,7 +143,7 @@ export function DonorCarousel({ intent: intents, className }: { intent: Intent[]
             opts={{
                 loop: true,
             }}
-            className={cn("embla embla__viewpor w-full max-w-[24rem] ease-in-out", className)}
+            className={cn("embla embla__viewport w-full max-w-[24rem] ease-in-out select-none", className)}
             plugins={[
                 Autoplay({
                     delay: 2400,
@@ -151,9 +152,9 @@ export function DonorCarousel({ intent: intents, className }: { intent: Intent[]
             ]}
             setApi={setApi}
             orientation={"vertical"}>
-            <CarouselContent className={"-mb-1 -mt-1 h-[600px]"}>
+            <CarouselContent className={"h-[600px] embla__container"}>
                 {duplicateArray(intents).map((it: Intent, index) => (
-                    <CarouselItem key={index} className={"h-fit basis-[13%] !p-0 opacity-75 data-[state=is-snapped]:opacity-100"}>
+                    <CarouselItem key={index} className={"h-fit basis-[14%] !p-0 opacity-75 data-[state=is-snapped]:opacity-100"}>
                         <Donor intent={it} className={"embla__slide__number"} size={Size.Large} />
                     </CarouselItem>
                 ))}

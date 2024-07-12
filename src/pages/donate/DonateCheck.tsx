@@ -1,6 +1,6 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button.tsx"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card.tsx"
+import { Input } from "@/components/ui/input.tsx"
 import { Textarea } from "@/components/ui/textarea.tsx"
 import { BadgeDollarSign, CheckCheck, Pencil } from "lucide-react"
 import { useState } from "react"
@@ -13,7 +13,6 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form.tsx"
-import { useToast } from "@/components/ui/use-toast.ts"
 import mountVector from "@/assets/MountVector.svg"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 
@@ -30,40 +29,30 @@ const FormSchema = z.object({
 
 export default function DonateCheck() {
     const { state } = useLocation()
-    const { fName, lName, email, amount } = state
-    const username = fName || lName ? `${fName}${fName && lName ? " " : ""}${lName}` : "Anonymous"
+    const { email, amount } = state
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
         defaultValues: {
-            name: username,
             email,
             amount,
             note: "",
         },
     })
 
-    const [newName, setNewName] = useState(username)
+    const [newName, setNewName] = useState("")
     const [newEmail, setNewEmail] = useState(email)
     const [newAmount, setNewAmount] = useState(amount)
 
-    const { toast } = useToast()
     const navigate = useNavigate()
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        toast({
-            title: "You submitted the following values:",
-            description: (
-                <pre className="mt-2 w-[340px] rounded-md bg-gray-800 p-4">
-                    <code className="text-white">{JSON.stringify(data, null, 2)}</code>
-                </pre>
-            ),
-        })
+        if (newName.trim().length === 0) data.name = "Anonymous"
         navigate("/donasi/checkout", { state: data })
     }
 
     function handleReset() {
-        setNewName(username)
+        setNewName("")
         setNewEmail(email)
         setNewAmount(amount)
     }
@@ -75,7 +64,7 @@ export default function DonateCheck() {
             <div className={"z-10"}>
                 <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
-                        <Card className={"z-10 w-[32rem] rounded-xl bg-[#414550]/45 font-cera shadow-lg drop-shadow-lg backdrop-blur-sm backdrop-saturate-100"}>
+                        <Card className={"z-10 w-[32rem] rounded-xl bg-[#414550]/45 font-cera shadow-lg drop-shadow-lg backdrop-blur-2xl backdrop-saturate-100"}>
                             <CardHeader>
                                 <CardTitle className={"flex items-center"}>
                                     <div className={"flex-grow"}>Ringkasan Donasi</div>
@@ -84,6 +73,7 @@ export default function DonateCheck() {
                                         className={"rof h-8 w-8 !bg-emerald-500 bg-transparent text-white ring-emerald-500/40 transition-all hover:ring-4"}
                                         size={"icon"}
                                         onClick={() => {
+                                            if (newName.trim().length === 0) setNewName("Anonymous")
                                             setHeight(height === 0 ? "auto" : 0)
                                         }}>
                                         {height === 0 ? <Pencil size={20} /> : <CheckCheck size={20} />}
@@ -188,7 +178,7 @@ export default function DonateCheck() {
                                                                 thousandSeparator={"."}
                                                                 prefix={"Rp "}
                                                                 className={
-                                                                    "flex h-12 w-full rounded-xl border bg-[#1e1f25]/60 px-3 py-2 text-sm font-semibold ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                                                                    "flex h-12 w-full rounded-xl border bg-[#1e1f25]/60 px-3 py-2 text-sm font-semibold ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 focus-visible:ring-offset-2"
                                                                 }
                                                             />
                                                         </FormControl>
@@ -206,7 +196,7 @@ export default function DonateCheck() {
                                             <FormItem>
                                                 <FormLabel className={"font-medium capitalize text-zinc-400"}>Tambahkan pesan (opsional)</FormLabel>
                                                 <FormControl>
-                                                    <Textarea className={"max-h-48 bg-[#1e1f25]/60"} placeholder="Ketik pesanmu disini." {...field} />
+                                                    <Textarea className={"max-h-48 bg-[#1e1f25]/60 focus-visible:ring-emerald-500"} placeholder="Ketik pesanmu disini." {...field} />
                                                 </FormControl>
                                                 <FormMessage />
                                             </FormItem>

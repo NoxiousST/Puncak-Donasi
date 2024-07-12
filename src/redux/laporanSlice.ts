@@ -1,5 +1,6 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import axios from 'axios';
+import { SERVER } from "@/lib/utils.ts"
 
 interface Mount {
     name: string;
@@ -38,7 +39,7 @@ const initialState: AktivitasState = {
 export const fetchLaporan = createAsyncThunk(
     'laporan/fetchLaporan',
     async () => {
-        const response = await axios.get("http://localhost:3000/mapbox");
+        const response = await axios.get(`${SERVER}//mapbox`);
         return response.data.aktivitas as AktivitasResponse[];
     }
 );

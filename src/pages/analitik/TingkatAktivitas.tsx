@@ -10,6 +10,7 @@ import {
     BreadcrumbList,
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb.tsx"
+import { SERVER } from "@/lib/utils.ts"
 
 type Mount = {
     name: string,
@@ -29,7 +30,7 @@ export default function TingkatAktivitas() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get("http://localhost:3000/tingkat-aktivitas")
+            const response = await axios.get(`${SERVER}/tingkat-aktivitas`)
             console.log(response)
             setItem(response.data.data)
         }

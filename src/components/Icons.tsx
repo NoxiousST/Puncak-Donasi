@@ -1,5 +1,9 @@
-import { Hexagon, Octagon, Pentagon, Signature, Squircle } from "lucide-react"
-import { Size } from "@/lib/type.ts"
+import c1 from "@/assets/1.png"
+import c2 from "@/assets/2.png"
+import c3 from "@/assets/3.png"
+import c4 from "@/assets/4.png"
+import c5 from "@/assets/5.png"
+import { cn } from "@/lib/utils.ts"
 
 export const ICCheck = () => {
     return (
@@ -74,40 +78,15 @@ export const ICInstagram = () => {
     )
 }
 
-export const ICDonate = ({ amount, sz }: { amount: number; sz: Size }) => {
-    let size: number
-    if (sz == Size.Small) size = 20
-    if (sz == Size.Medium) size = 28
-    if (sz == Size.Large) size = 36
+export const ICDonate = ({ amount, className }: { amount: number; className: string }) => {
+    const { src } = imageMap.find(({ limit }) => amount <= limit);
+    return <img className={cn(className)} src={src} alt={src} />;
+};
 
-    if (amount <= 50000)
-        return (
-            <div className={"flex items-center rounded-full bg-gradient-to-br from-rose-400 to-rose-500 p-1 align-middle"}>
-                <Squircle size={size} />
-            </div>
-        )
-    if (amount <= 200000)
-        return (
-            <div className={"flex items-center rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 p-1 align-middle"}>
-                <Pentagon size={size} />
-            </div>
-        )
-    if (amount <= 500000)
-        return (
-            <div className={"flex items-center rounded-full bg-gradient-to-br from-blue-400 to-blue-500 p-1 align-middle"}>
-                <Hexagon size={size} />
-            </div>
-        )
-    if (amount <= 1000000)
-        return (
-            <div className={"bg-indigo-to-br flex items-center rounded-full from-violet-400 to-violet-500 p-1 align-middle"}>
-                <Octagon size={size} />
-            </div>
-        )
-    if (amount > 1000000)
-        return (
-            <div className={"flex items-center rounded-full bg-gradient-to-br from-amber-400 to-amber-500 p-1 align-middle"}>
-                <Signature size={size} />
-            </div>
-        )
-}
+const imageMap = [
+    { limit: 50000, src: c1 },
+    { limit: 200000, src: c2 },
+    { limit: 500000, src: c3 },
+    { limit: 1000000, src: c4 },
+    { limit: Infinity, src: c5 }
+];

@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button.tsx"
-import { Separator } from "@/components/ui/separator"
-import { Textarea } from "@/components/ui/textarea"
+import { Separator } from "@/components/ui/separator.tsx"
+import { Textarea } from "@/components/ui/textarea.tsx"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx"
 import { BadgeDollarSign, LoaderCircle } from "lucide-react"
 
@@ -18,9 +18,10 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form.tsx"
+import { SERVER } from "@/lib/utils.ts"
 
 const initStripe = async () => {
-    const res = await axios.get("https://apipuncak.vercel.app/publishkey")
+    const res = await axios.get(`${SERVER}/publishkey`)
     const publishableKey = await res.data.publishable_key
     console.log(publishableKey)
     return loadStripe(publishableKey)
@@ -38,7 +39,7 @@ export default function Donate() {
     useEffect(() => {
         console.log("Creating Payment Intent...")
         axios
-            .post("https://apipuncak.vercel.app/create-payment-intent", { name, email, amount, note })
+            .post(`${SERVER}/create-payment-intent`, { name, email, amount, note })
             .then((res) => setClientSecret(res.data.client_secret))
             .catch((error) => console.log(error.response))
     }, [])

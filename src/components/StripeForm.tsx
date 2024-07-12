@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input.tsx"
 import { Button } from "@/components/ui/button.tsx"
 import { StripePaymentElementOptions } from "@stripe/stripe-js"
 import { Label } from "@/components/ui/label.tsx"
+import { HOST } from "@/lib/utils.ts"
 
 export default function StripeForm({ email }:  { email: string }) {
     const stripe = useStripe()
@@ -43,7 +44,7 @@ export default function StripeForm({ email }:  { email: string }) {
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: "https://puncakdonasi.vercel.app",
+                return_url: `${HOST}/donasi/success`,
             },
         })
 

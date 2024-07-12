@@ -18,6 +18,7 @@ import {
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb.tsx"
 import classNames from "classnames"
+import { SERVER } from "@/lib/utils.ts"
 
 interface TimelineItem {
     type: string
@@ -42,7 +43,7 @@ export default function LaporanAktivitas() {
 
     useEffect(() => {
         async function fetchData() {
-            const response = await axios.get(`http://localhost:3000/laporan?page=${page}`)
+            const response = await axios.get(`${SERVER}/laporan?page=${page}`)
             console.log(response)
             setItem(response.data.data)
         }
