@@ -11,22 +11,11 @@ import {
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb.tsx"
 import { SERVER } from "@/lib/utils.ts"
+import { ActivityLevel } from "@/lib/type.ts"
 
-type Mount = {
-    name: string,
-    location: string,
-    link: string
-}
-
-type AktivitasResponse = {
-    status: string
-    description: string
-    count: number
-    mounts: Mount[]
-}
 
 export default function TingkatAktivitas() {
-    const [item, setItem] = useState<AktivitasResponse[]>([])
+    const [item, setItem] = useState<ActivityLevel[]>([])
 
     useEffect(() => {
         async function fetchData() {
@@ -78,7 +67,7 @@ export default function TingkatAktivitas() {
                                     ) : (
                                         data.mounts.map((mount) => {
                                             return (
-                                                <Link to={`/laporan?url=${mount.link}&point=true`}>
+                                                <Link to={`/analitik/laporan-aktivitas/laporan?url=${mount.link}&point=true`}>
                                                     <div className={"group/mount flex items-center rounded-lg px-4 py-2 hover:bg-[#414550]/75"}>
                                                         <div className={"flex flex-grow flex-col"}>
                                                             <span>Gunung {mount.name}</span>

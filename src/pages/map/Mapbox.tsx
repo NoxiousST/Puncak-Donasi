@@ -15,8 +15,9 @@ import orange from "@/assets/orange.png"
 import yellow from "@/assets/yellow.png"
 import green from "@/assets/green.png"
 import { Mount } from "@/lib/type.ts"
-import Error from "@/error.tsx"
+import Error, { ReduxError } from "@/error.tsx"
 import LoadingScreen from "@/pages/LoadingScreen.tsx"
+import { SerializedError } from "@reduxjs/toolkit"
 
 const Mapbox: React.FC = () => {
     const mapRef = useRef<MapRef | null>(null)
@@ -85,8 +86,9 @@ const Mapbox: React.FC = () => {
         if (laporanState.loading) {
             return <LoadingScreen/>
         }
+
         if (laporanState.error) {
-            return <Error/>
+            return  <ReduxError error={laporanState.error}/>
         }
     }
 

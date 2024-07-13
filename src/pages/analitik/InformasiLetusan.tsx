@@ -7,25 +7,10 @@ import { LazyLoadImage } from "react-lazy-load-image-component"
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination.tsx"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb.tsx"
 import { SERVER } from "@/lib/utils.ts"
-
-interface TimelineLetusanItem {
-    type: "timeline-item"
-    time: string
-    author: string
-    title: string
-    text: string
-    image: string
-    url: string
-}
-
-export interface TimelineLetusan {
-    type: "timeline-day"
-    date: string
-    children: TimelineLetusanItem[]
-}
+import { EruptionInformation } from "@/lib/type.ts"
 
 export default function InformasiLetusan() {
-    const [item, setItem] = useState<TimelineLetusan[]>([])
+    const [item, setItem] = useState<EruptionInformation[]>([])
     const [page, setPage] = useState(1)
 
     useEffect(() => {

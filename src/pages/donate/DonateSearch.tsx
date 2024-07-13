@@ -28,7 +28,7 @@ export default function DonateSearch() {
     const [intents, setIntents] = useState<Intent[]>([]);
 
     useEffect(() => {
-        setIntents(payment.intents); // Set initial data
+        if (payment) setIntents(payment.intents)
     }, [payment]);
 
     const form = useForm<z.infer<typeof formSchema>>({
@@ -49,6 +49,7 @@ export default function DonateSearch() {
         setIntents(results);
     };
 
+    if (!payment) return
     return (
         <div className={"relative flex items-center justify-center bg-[radial-gradient(circle_at_top,_#2d303bcc,_#0F1014)] py-36"}>
             <div className={"absolute top-64 -z-10 blur contrast-150 saturate-150"}>
@@ -78,7 +79,7 @@ export default function DonateSearch() {
                             </BreadcrumbItem>
                         </BreadcrumbList>
                     </Breadcrumb>
-                    <h1 className={"text-6xl font-bold"}>Cari Donor</h1>
+                    <h1 className={"text-6xl font-bold"}>Cari Donasi</h1>
                     <Separator className={"h-[5px] w-2/3 place-self-center rounded-full bg-emerald-500"} />
                     <p ref={searchRef} className={"text-gray-300"}>
                         Cari donasi yang diberikan untuk mendukung masyarakat yang terkena dampak letusan gunung berapi di Indonesia. Masukkan detail di bawah untuk menemukan donasi tertentu:
@@ -95,7 +96,7 @@ export default function DonateSearch() {
                                         <FormItem className={"flex-grow"}>
                                             <FormControl>
                                                 <Input
-                                                    placeholder={"Cari donor..."}
+                                                    placeholder={"Cari donasi..."}
                                                     {...field}
                                                     className={"h-14 rounded-xl bg-[#414550]/50 font-varela text-xl backdrop-blur-lg focus-visible:shadow-xl focus-visible:shadow-emerald-500/25"}
                                                 />
@@ -110,7 +111,7 @@ export default function DonateSearch() {
                             </div>
 
                             <div className={"ms-auto flex items-center gap-2 font-varela"}>
-                                <text className={"text-sm text-gray-400"}>Urutkan :</text>
+                                <p className={"text-sm text-gray-400"}>Urutkan :</p>
                                 <FormField
                                     control={form.control}
                                     name="sorting"

@@ -19,26 +19,11 @@ import {
 } from "@/components/ui/breadcrumb.tsx"
 import classNames from "classnames"
 import { SERVER } from "@/lib/utils.ts"
+import { ActivityReport } from "@/lib/type.ts"
 
-interface TimelineItem {
-    type: string
-    time: string
-    author: string
-    date: string
-    status: string
-    title: string
-    text: string
-    url: string
-}
-
-interface Timeline {
-    type: string
-    date: string
-    children: TimelineItem[]
-}
 
 export default function LaporanAktivitas() {
-    const [item, setItem] = useState<Timeline[]>([])
+    const [item, setItem] = useState<ActivityReport[]>([])
     const [page, setPage] = useState(1)
 
     useEffect(() => {

@@ -7,15 +7,15 @@ import { LazyLoadImage } from "react-lazy-load-image-component"
 import Map, { MapRef, Marker, Popup } from "react-map-gl"
 import volcano from "@/assets/orange.png"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb.tsx"
-import { LaporanLetusan } from "@/lib/type.ts"
+import { EruptionInformationDetail } from "@/lib/type.ts"
 import classNames from "classnames"
 import { SERVER } from "@/lib/utils.ts"
 
 export default function DetailLaporanLetsuan() {
-    const [item, setItem] = useState<LaporanLetusan>()
+    const [item, setItem] = useState<EruptionInformationDetail>()
     const { url } = useQueryParams()
 
-    const [popupInfo, setPopupInfo] = useState<LaporanLetusan>(null)
+    const [popupInfo, setPopupInfo] = useState<EruptionInformationDetail>(null)
     const mapRef = useRef<MapRef>()
 
     useEffect(() => {

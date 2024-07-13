@@ -6,17 +6,11 @@ import { Link } from "react-router-dom"
 import date from "date-and-time"
 import id from 'date-and-time/locale/id';
 import { SERVER } from "@/lib/utils.ts"
+import { DailyReport } from "@/lib/type.ts"
 
-interface TabelLaporan {
-    no: string
-    gunung_api: string
-    visual: string[]
-    kegempaan: string[]
-    rekomendasi: string[]
-}
 
 export default function LaporanHarian() {
-    const [item, setItem] = useState<TabelLaporan[]>([])
+    const [item, setItem] = useState<DailyReport[]>([])
 
     useEffect(() => {
         async function fetchData() {

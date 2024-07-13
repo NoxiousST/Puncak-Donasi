@@ -1,46 +1,46 @@
 import { createSlice, createAsyncThunk, SerializedError } from "@reduxjs/toolkit"
 import axios from 'axios';
-import { ResponseActivity } from "@/lib/type.ts"
+import { Payment } from "@/lib/type.ts"
 
-interface MapRedux {
+export interface SearchRedux {
     loading: boolean;
-    data: ResponseActivity[] | null;
+    data: Payment | null;
     error: SerializedError | null;
 }
 
-const initialState: MapRedux = {
+const initialState: SearchRedux = {
     loading: false,
     data: null,
     error: null,
 };
 
-export const fetchLaporan = createAsyncThunk(
-    'laporan/fetchLaporan',
+export const fetchPayments = createAsyncThunk(
+    'payments/fetchPayments',
     async () => {
-        const response = await axios.get(`https://apipuncak.vercel.app/mapbox`);
-        return response.data.aktivitas as ResponseActivity[];
+        const response = await axios.get(`https://apipuncak.vercel.app/payments`)
+        return response.data.paymentList as Payment;
     }
 );
 
-const laporanSlice = createSlice({
-    name: 'laporan',
+const paymenstsSlice = createSlice({
+    name: 'payments',
     initialState,
     reducers: {},
     extraReducers: (builder) => {
         builder
-            .addCase(fetchLaporan.pending, (state) => {
+            .addCase(fetchPayments.pending, (state) => {
                 state.loading = true;
                 state.error = null;
             })
-            .addCase(fetchLaporan.fulfilled, (state, action) => {
+            .addCase(fetchPayments.fulfilled, (state, action) => {
                 state.loading = false;
                 state.data = action.payload;
             })
-            .addCase(fetchLaporan.rejected, (state, action) => {
+            .addCase(fetchPayments.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.error;
             });
     },
 });
 
-export default laporanSlice.reducer;
+export default paymenstsSlice.reducer;

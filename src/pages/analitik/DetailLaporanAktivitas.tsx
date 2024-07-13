@@ -14,31 +14,13 @@ import {
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb.tsx"
 import { SERVER } from "@/lib/utils.ts"
-
-interface Laporan {
-    level: string
-    name: string
-    date: string
-    time: string
-    author: string
-    geo: string
-    code: string
-    laporan: {
-        image: string
-        visual: string
-        klimatologi: string
-        gempa: string[]
-        rekomendasi: string[]
-    }
-    latitude?: number
-    longitude?: number
-}
+import { ActivityReportDetail } from "@/lib/type.ts"
 
 export default function DetailLaporanAktivitas() {
-    const [item, setItem] = useState<Laporan>()
+    const [item, setItem] = useState<ActivityReportDetail>()
     const { url, point } = useQueryParams()
 
-    const [popupInfo, setPopupInfo] = useState<Laporan>(null)
+    const [popupInfo, setPopupInfo] = useState<ActivityReportDetail>(null)
     const mapRef = useRef<MapRef>()
 
     useEffect(() => {

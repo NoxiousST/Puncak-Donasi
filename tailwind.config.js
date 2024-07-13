@@ -17,7 +17,8 @@ module.exports = {
             cera: ["Cera Pro", "sans-serif"],
             montserrat: ["Montserrat", "sans-serif"],
             inter: ["Inter", "sans-serif"],
-            varela: ["Varela Round", "sans-serif"]
+            varela: ["Varela Round", "sans-serif"],
+            righteous: ["Righteous", "sans-serif"]
         },
         extend: {
             backgroundImage: {

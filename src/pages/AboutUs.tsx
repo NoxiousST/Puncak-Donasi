@@ -30,23 +30,23 @@ export default function AboutUs() {
             <section className={"grid gap-52 bg-[#262933]/80 p-20"}>
                 <div className={"font-inter grid items-center justify-center gap-10 text-center"}>
                     <div className={"grid gap-4"}>
-                        <text className={"text-4xl font-bold"}>Misi Kami</text>
+                        <p className={"text-4xl font-bold"}>Misi Kami</p>
                         <Separator className={"mx-auto h-1 w-64 rounded-full bg-rose-500"} />
                     </div>
                     <div className={"grid w-[40rem] gap-4 leading-loose"}>
-                        <text className={""}>
+                        <p className={""}>
                             Selamat datang di Puncak, sebuah platform yang didedikasikan untuk mendukung masyarakat yang terkena dampak letusan gunung berapi di Indonesia. Misi kami adalah memberikan
                             informasi secara real time, akurat, dan memfasilitasi donasi untuk membantu upaya pemulihan.
-                        </text>
-                        <text>Kami bertujuan untuk menghubungkan donasi dengan mereka yang membutuhkan, memanfaatkan teknologi untuk memberikan dampak yang berarti.</text>
+                        </p>
+                        <p>Kami bertujuan untuk menghubungkan donasi dengan mereka yang membutuhkan, memanfaatkan teknologi untuk memberikan dampak yang berarti.</p>
                     </div>
                 </div>
                 <div className={"grid gap-12"}>
                     <div className={"font-inter grid items-center justify-center gap-2 text-center"}>
                         <Badge className={"mx-auto w-fit bg-rose-500 text-white hover:bg-rose-500/90"}>Fitur Platform</Badge>
                         <div className={"grid gap-10"}>
-                            <text className={"text-4xl font-bold"}>Apa yang kami lakukan</text>
-                            <text className={"w-[48rem] leading-loose"}>Di Puncak, kami menggabungkan data dan kasih sayang untuk menawarkan pendekatan komprehensif terhadap bantuan bencana.</text>
+                            <p className={"text-4xl font-bold"}>Apa yang kami lakukan</p>
+                            <p className={"w-[48rem] leading-loose"}>Di Puncak, kami menggabungkan data dan kasih sayang untuk menawarkan pendekatan komprehensif terhadap bantuan bencana.</p>
                         </div>
                     </div>
                     <div className={"mx-auto flex w-[64rem] justify-center gap-6"}>
@@ -88,11 +88,11 @@ export default function AboutUs() {
                     <div className={"flex flex-col text-end w-[36rem] gap-4 items-end"}>
                         <HeartHandshake className={"place-self-end stroke-red-500"} size={56} strokeWidth={2.5} />
                         <Separator className={"h-1.5 w-36 rounded-full bg-rose-500"} />
-                        <text className={"text-4xl font-bold"}>Bagaimana Anda Dapat Membantu</text>
-                        <text className={" leading-relaxed"}>
+                        <p className={"text-4xl font-bold"}>Bagaimana Anda Dapat Membantu</p>
+                        <p className={" leading-relaxed"}>
                             Sumbangan Anda membuat perbedaan. Setiap kontribusi, berapa pun besarnya, membantu mendukung tanggap darurat, menyediakan pasokan penting, dan membangun kembali masyarakat.
                             Melalui platform kami yang aman, Anda dapat memilih untuk berdonasi untuk tujuan tertentu atau membiarkan kami mengalokasikan dana Anda di tempat yang paling membutuhkan.
-                        </text>
+                        </p>
                     </div>
                 </div>
             </section>

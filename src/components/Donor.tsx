@@ -4,15 +4,18 @@ import { ICDonate } from "@/components/Icons.tsx"
 import Autoplay from "embla-carousel-autoplay"
 import { Carousel, CarouselApi, CarouselContent, CarouselItem } from "@/components/ui/carousel.tsx"
 import { useCallback, useEffect, useRef, useState } from "react"
-import { Intent, Size } from "@/lib/type.ts"
+import { Intent, Payment, Size } from "@/lib/type.ts"
 import { cn } from "@/lib/utils.ts"
 import classNames from "classnames"
+import en from "date-and-time/locale/en"
+import { Skeleton } from "@/components/ui/skeleton.tsx"
 
 
 export default function Donor({ intent, className, size }: { intent: Intent; className?: string; size?: Size }) {
     let sz = size
     if (!size) sz = Size.Medium
 
+    date.locale(en)
     const d = new Date(intent.created * 1000)
     const created = date.format(d, "DD/MM/YYYY, HH:mm:ss A")
     return (
@@ -70,7 +73,7 @@ export function DonorSearch({ intent, className }: { intent: Intent; className?:
     )
 }
 
-export function DonorCarousel({ intent: intents, className }: { intent: Intent[]; className?: string }) {
+export function DonorCarousel({ payment, className }: { payment: Payment; className?: string }) {
     const TWEEN_FACTOR_BASE = 0.28
     const numberWithinRange = (number: number, min: number, max: number): number => Math.min(Math.max(number, min), max)
 
@@ -153,11 +156,27 @@ export function DonorCarousel({ intent: intents, className }: { intent: Intent[]
             setApi={setApi}
             orientation={"vertical"}>
             <CarouselContent className={"h-[600px] embla__container"}>
-                {duplicateArray(intents).map((it: Intent, index) => (
+                {
+                    payment ? (
+                    duplicateArray(payment.intents).map((it: Intent, index) => (
                     <CarouselItem key={index} className={"h-fit basis-[14%] !p-0 opacity-75 data-[state=is-snapped]:opacity-100"}>
                         <Donor intent={it} className={"embla__slide__number"} size={Size.Large} />
                     </CarouselItem>
-                ))}
+                ))): (
+                        Array.from({ length: 10 }).map((_, index) => (
+                            <CarouselItem key={index} className={"h-fit basis-[14%] !p-0 opacity-75 data-[state=is-snapped]:opacity-100"}>
+                                <Skeleton className={"embla__slide__number flex h-14 items-center gap-2 px-3"}>
+                                    <Skeleton className={"h-11 w-11 shrink-0 rounded-full bg-[#3c4154]"} />
+                                    <Skeleton className={"h-6 w-28 shrink-0 bg-[#3c4154]"} />
+                                    <div className={"flex w-full flex-col items-end gap-2"}>
+                                        <Skeleton className={"h-5 w-28 bg-[#3c4154]"} />
+                                        <Skeleton className={"h-2 w-28 bg-[#3c4154]"} />
+                                    </div>
+                                </Skeleton>
+                            </CarouselItem>
+                        ))
+                    )
+                }
             </CarouselContent>
         </Carousel>
     )

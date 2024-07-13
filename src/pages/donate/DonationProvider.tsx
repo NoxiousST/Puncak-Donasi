@@ -1,36 +1,39 @@
-import { createContext, useEffect, useState } from "react"
-import axios from "axios"
-import { Payment } from "@/lib/type.ts"
+import { createContext, useEffect } from "react"
+import { Intent } from "@/lib/type.ts"
 import LoadingScreen from "@/pages/LoadingScreen.tsx"
 import { SERVER } from "@/lib/utils.ts"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "@/redux/store.ts"
+
+import { fetchPayments } from "@/redux/searchSlice.ts"
+import { ReduxError } from "@/error.tsx"
 
 export const DonationContext = createContext(null)
 
 export const DonationProvider = ({ children }) => {
-    const [payment, setPayment] = useState<Payment>()
+    const dispatch = useDispatch<AppDispatch>()
+    const searchState = useSelector((state: RootState) => state.payments)
 
     useEffect(() => {
-        async function getPayment() {
-            const response = await axios.get(`https://apipuncak.vercel.app/payments`)
-            setPayment(response.data.paymentList)
+        dispatch(fetchPayments())
+    }, [dispatch])
+
+    if (searchState.loading) return <LoadingScreen />
+    if (searchState.error) return <ReduxError error={searchState.error} />
+
+    const searchDonations = (username: string, sorting: string, order: string) => {
+        if (!searchState.data) return
+        const trimmedUsername = username.toLowerCase().trim()
+        const filteredIntents = searchState.data.intents.filter((it) => it.display.toLowerCase().trim().includes(trimmedUsername))
+        const sortFunctions = {
+            date: (a: Intent, b: Intent) => b.created - a.created,
+            amount: (a: Intent, b: Intent) => b.amount - a.amount,
+            name: (a: Intent, b: Intent) => a.display.localeCompare(b.display),
         }
-
-        getPayment()
-    }, [])
-
-    if (!payment) {
-        return <LoadingScreen />
-    }
-
-    const searchDonations = (username, sorting, order) => {
-        let filteredIntents = payment.intents
-        filteredIntents = filteredIntents.filter((it) => it.display.toLowerCase().trim().includes(username.toLowerCase().trim()))
-        if (sorting === "date") filteredIntents.sort((a, b) => b.created - a.created)
-        if (sorting === "amount") filteredIntents.sort((a, b) => b.amount - a.amount)
-        if (sorting === "name") filteredIntents.sort((a, b) => a.display.localeCompare(b.display))
+        if (sortFunctions[sorting]) filteredIntents.sort(sortFunctions[sorting])
         if (order === "ascend") filteredIntents.reverse()
         return filteredIntents
     }
 
-    return <DonationContext.Provider value={{ payment, searchDonations }}>{children}</DonationContext.Provider>
+    return <DonationContext.Provider value={{ payment: searchState.data, searchDonations }}>{children}</DonationContext.Provider>
 }

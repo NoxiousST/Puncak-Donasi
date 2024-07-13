@@ -8,6 +8,7 @@ import { ArrowUpRight, Share2 } from "lucide-react"
 import { Berita } from "@/pages/News.tsx"
 import { readingTime } from "reading-time-estimator"
 import { useEffect } from "react"
+import id from "date-and-time/locale/id"
 
 interface News {
     data: Berita[],
@@ -19,6 +20,7 @@ export default function NewsDetail() {
     const data = useLoaderData() as News
     const news = data.data[0]
 
+    date.locale(id)
     const now = new Date()
     const added = date.parse(news.date, "YYYY-MM-DDThh:mm:ss")
 

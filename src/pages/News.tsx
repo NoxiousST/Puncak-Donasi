@@ -9,8 +9,10 @@ import { Button } from "@/components/ui/button.tsx"
 import { ArrowRight } from "lucide-react"
 import date from "date-and-time"
 import supabase from "@/lib/supabase.ts"
-import { useNavigate } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
 import { readingTime } from "reading-time-estimator"
+import id from "date-and-time/locale/id"
+import { newsDate } from "@/lib/utils.ts"
 
 export default function News() {
     const [news, setNews] = useState<Berita[]>([])
@@ -20,10 +22,16 @@ export default function News() {
         window.scrollTo(0, 0);
     }, [])
 
+    date.locale(id)
     async function getNews() {
         const { data: udata } = await supabase.from("news").select(`id, title, description, short_description, date, type, image, site(id, name, logo)`).order("date", { ascending: false })
         setNews(udata)
     }
+
+
+    if (!news[0]) return
+    const added = date.parse(news[0].date, "YYYY-MM-DDThh:mm:ss")
+    const minutes = readingTime(news[0].description).minutes
 
     return (
         <div className={"grid gap-12 bg-[radial-gradient(circle_at_top,_#2d303bcc,_#0F1014)] px-24 py-8 font-cera"}>
@@ -36,36 +44,30 @@ export default function News() {
                 </div>
             </div>
 
-            <div className={"flex gap-12"}>
+            <Link to={news[0].id} className={"flex gap-12"}>
                 <div className={"basis-1/2 px-4"}>
-                    <LazyLoadImage
-                        className={"aspect-[16/10] w-full rounded-xl"}
-                        src={"https://pict.sindonews.net/webp/732/pena/news/2024/06/26/174/1403417/gunung-lewotobi-lakilaki-kembali-erupsi-semburkan-abu-tebal-700-meter-xuo.webp"}
-                    />
+                    <LazyLoadImage className={"aspect-[16/10] w-full rounded-xl"} src={news[0].image} />
                 </div>
                 <div className={"flex basis-1/2 flex-col gap-4 py-4"}>
                     <div className={"flex items-center gap-4"}>
                         <Avatar>
-                            <AvatarImage src="https://github.com/shadcn.png" alt="@shadcn" />
+                            <AvatarImage src={news[0].site.logo} alt="@shadcn" />
                             <AvatarFallback>DN</AvatarFallback>
                         </Avatar>
                         <p className={"text-lg font-medium"}>
-                            Detik News <span className={"text-base font-normal text-gray-400"}>• 12 menit yang lalu</span>
+                            {news[0].site.name} <span className={"text-base font-normal text-gray-400"}>• {newsDate(new Date(), added)}</span>
                         </p>
                     </div>
 
-                    <h1 className={"text-4xl font-bold"}>Gunung Lewotobi Laki-laki Kembali Erupsi, Semburkan Abu Tebal 700 Meter</h1>
-                    <p className={"text-gray-300"}>
-                        Gunung Lewotobi Laki-laki di Flores Timur, Nusa Tenggara Timur (NTT) kembali menunjukkan aktivitas vulkaniknya pada hari Rabu (26/6/2024) dini hari. Letusan gunung yang terjadi
-                        pada pukul 05:04 WITA ini menyemburkan abu tebal setinggi 700 meter ke arah barat laut.
-                    </p>
+                    <h1 className={"text-4xl font-bold"}>{news[0].title}</h1>
+                    <p className={"text-gray-300"}>{news[0].short_description}</p>
                     <div className={"flex gap-3 py-2"}>
-                        <p className={"font-medium text-rose-400"}>Berita</p>
+                        <p className={"font-medium text-rose-400"}>{news[0].type}</p>
                         <p className={"text-gray-400"}>•</p>
-                        <p className={"text-gray-400"}>4 menit baca</p>
+                        <p className={"text-gray-400"}>{minutes} menit baca</p>
                     </div>
                 </div>
-            </div>
+            </Link>
 
             <div className={"grid gap-4"}>
                 <div className={"flex"}>
@@ -87,18 +89,12 @@ export default function News() {
     )
 }
 
+
+
 function NewsList({ berita }: News) {
     const navigate = useNavigate()
     const now = new Date()
     const added = date.parse(berita.date, "YYYY-MM-DDThh:mm:ss")
-
-    const tanggal = () => {
-        const difference = date.subtract(now, added);
-
-        if (difference.toDays() > 7) return date.format(added, "DD MMMM YYYY");
-        if (!date.isSameDay(now, added)) return `${difference.toDays().toFixed()} hari yang lalu`;
-        return difference.toHours() < 1 ? `${difference.toMinutes().toFixed()} menit yang lalu` : `${difference.toHours().toFixed()} jam yang lalu`;
-    };
 
     const minutes = readingTime(berita.description).minutes
 
@@ -119,7 +115,7 @@ function NewsList({ berita }: News) {
                     <AvatarFallback>DN</AvatarFallback>
                 </Avatar>
                 <p className={"text-sm font-medium"}>
-                    {berita.site.name} <span className={"text-sm font-normal text-gray-400"}>• {tanggal()}</span>
+                    {berita.site.name} <span className={"text-sm font-normal text-gray-400"}>• {newsDate(now, added)}</span>
                 </p>
             </div>
             <CardHeader className={"gap-2 px-4"}>

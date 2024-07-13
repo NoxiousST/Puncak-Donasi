@@ -21,12 +21,19 @@ import supabase from "@/lib/supabase.ts"
 import { Berita } from "@/pages/News.tsx"
 import date from "date-and-time"
 import axios from "axios"
-import { TimelineLetusan } from "@/pages/analitik/InformasiLetusan.tsx"
 import { HoverCard, HoverCardContent, HoverCardTrigger } from "@/components/ui/hover-card.tsx"
-import { Badge } from "@/components/ui/badge.tsx"
 import Donor, { DonorCarousel } from "@/components/Donor.tsx"
-import { Payment } from "@/lib/type.ts"
-import { SERVER } from "@/lib/utils.ts"
+import { EruptionInformation, EruptionInformationItem, Payment } from "@/lib/type.ts"
+import { newsDate, paymentDate, SERVER } from "@/lib/utils.ts"
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar.tsx"
+import { readingTime } from "reading-time-estimator"
+import id from "date-and-time/locale/id"
+import { useDispatch, useSelector } from "react-redux"
+import { AppDispatch, RootState } from "@/redux/store.ts"
+import { fetchPayments, SearchRedux } from "@/redux/searchSlice.ts"
+import { fetchMainAnalytic, MainAnalyticRedux } from "@/redux/mainAnalyticSlice.ts"
+import { Skeleton } from "@/components/ui/skeleton.tsx"
+import { fetchMainNews, MainNewsRedux } from "@/redux/mainNewsSlice.ts"
 
 const FormSchema = z.object({
     email: z.string().email({
@@ -40,41 +47,23 @@ const FormSchema = z.object({
 function App() {
     const donateRef = useRef(null)
     const [payment, setPayment] = useState<Payment>({ count: 0, total: 0, intents: undefined })
-    const [news, setNews] = useState<Berita[]>([])
-    const [analytic, setAnalytic] = useState<TimelineLetusan>()
+
+    const dispatch = useDispatch<AppDispatch>()
+    const analyticState = useSelector((state: RootState) => state.mainAnalytic)
+    const newsState = useSelector((state: RootState) => state.mainNews)
+    const paymentsState = useSelector((state: RootState) => state.payments)
 
     useEffect(() => {
-        async function getAnalytic() {
-            const response = await axios.get(`https://apipuncak.vercel.app/informasi-letusan?page=1`)
-            console.log(response)
-            setAnalytic(response.data.data[0])
-        }
-
-        getAnalytic().finally()
-    }, [])
+        dispatch(fetchMainAnalytic())
+    }, [dispatch])
 
     useEffect(() => {
-        async function getPayment() {
-            const response = await axios.get(`https://apipuncak.vercel.app/payments`)
-            console.log(response)
-            setPayment(response.data.paymentList)
-        }
-
-        getPayment().finally()
-    }, [])
+        dispatch(fetchMainNews())
+    }, [dispatch])
 
     useEffect(() => {
-        async function getNews() {
-            const { data: udata } = await supabase
-                .from("news")
-                .select(`id, title, description, short_description, date, type, image, site(id, name, logo)`)
-                .order("date", { ascending: false })
-                .limit(3)
-            setNews(udata)
-        }
-
-        getNews().finally()
-    }, [])
+        dispatch(fetchPayments())
+    }, [dispatch])
 
     const form = useForm<z.infer<typeof FormSchema>>({
         resolver: zodResolver(FormSchema),
@@ -84,18 +73,11 @@ function App() {
         },
     })
 
+    date.locale(id)
     const navigate = useNavigate()
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
         navigate("/donasi", { state: data })
-    }
-
-    const d = payment.intents ? new Date(payment.intents[0].created * 1000) : new Date()
-    const tanggal = () => {
-        const now = new Date()
-        if (!date.isSameDay(now, d)) return date.format(d, "dddd, DD MMMM YYYY")
-        const difference = date.subtract(now, d)
-        return difference.toHours() < 1 ? `${difference.toMinutes().toFixed()} menit yang lalu` : `${difference.toHours().toFixed()} jam yang lalu`
     }
 
     return (
@@ -127,83 +109,9 @@ function App() {
                         </Button>
                     </div>
                     <div className={"flex w-full flex-col justify-center gap-12 px-8 md:flex-row md:gap-20"}>
-                        <HoverCard>
-                            <HoverCardTrigger className={"h-fit"}>
-                                <Link to={`analitik/informasi-letusan/laporan?url=${analytic && analytic.children[0].url}`}>
-                                    <Card
-                                        className={
-                                            "relative order-2 flex h-fit rounded-xl border-zinc-700 bg-[radial-gradient(circle_at_top_left,_#373b46,_#1b1d25)] ring-white/80 transition-all hover:shadow-xl hover:shadow-white/50 hover:ring-4 md:w-80"
-                                        }>
-                                        <LazyLoadImage className={"absolute bottom-0 p-2"} src={mountVector} />
-                                        <div className={"group z-10 grid w-full rounded-xl bg-gradient-to-r from-[#1b1d2566] to-[#1b1d25] p-4"}>
-                                            <div className={"flex justify-between"}>
-                                                <span className={"w-fit rounded-full bg-rose-600 px-2 py-0.5 text-sm font-semibold"}>Erupsi</span>
-                                                <Info className={"stroke-gray-500"} />
-                                            </div>
-                                            <div className={"w-fit font-cera text-2xl font-medium"}>Gunung {analytic && analytic.children[0].title}</div>
-                                            <div className={"w-fit text-left text-xs text-gray-300"}>{analytic && analytic.date}</div>
-                                            <div className={"w-fit text-left text-xs text-gray-400"}>Pukul {analytic && analytic.children[0].time}</div>
-                                            {analytic && analytic.children[0].image && (
-                                                <div className={"mt-4 w-fit place-self-end rounded-lg bg-[#414550]/15 p-2 shadow-lg drop-shadow-lg backdrop-blur-sm backdrop-saturate-100"}>
-                                                    <LazyLoadImage
-                                                        src={analytic && analytic.children[0].image}
-                                                        className={"w-32 rounded-lg opacity-90 transition-all duration-500 ease-in-out group-hover:w-64"}
-                                                    />
-                                                    {/*<text className={"text-sm text-gray-300/90 line-clamp-3"}>{analytic && analytic.children[0].text}</text>*/}
-                                                </div>
-                                            )}
-                                        </div>
-                                    </Card>
-                                </Link>
-                            </HoverCardTrigger>
-                            <HoverCardContent className={"rounded-xl bg-[#2d303b]/30 backdrop-blur-lg backdrop-saturate-100 md:w-80"}>
-                                <text className={"line-clamp-4 text-sm text-gray-300"}>{analytic && analytic.children[0].text}</text>
-                            </HoverCardContent>
-                        </HoverCard>
-                        <Card className={"order-1 mt-24 hidden rounded-xl border-zinc-700 transition-all duration-500 ease-in-out md:order-4 lg:flex"}>
-                            <div className={"relative"}>
-                                <div className={"absolute left-1/2 top-8 h-60 w-11/12 -translate-x-1/2 rounded-xl bg-[#2d303b]/40"}></div>
-                                <LazyLoadImage src={news[0] && news[0].image} alt={""} className={"relative h-64 w-96 rounded-xl bg-[#1b1d25]"} />
-                                <div className={"absolute bottom-0 flex h-64 flex-col justify-end rounded-xl bg-gradient-to-b from-[#0F1014]/10 via-[#0F1014]/40 to-[#0F1014]/80 p-2"}>
-                                    <Badge className={"w-fit !bg-rose-600 text-white"}>{news[0] && news[0].site.name}</Badge>
-                                    <h1 className={"line-clamp-1 text-start font-cera text-xl font-medium"}>{news[0] && news[0].title}</h1>
-                                    <p className={"line-clamp-2 flex-wrap text-wrap text-start text-sm text-gray-400"}>{news[0] && news[0].short_description}</p>
-                                </div>
-                            </div>
-                        </Card>
-                        <Card className={"group order-5 grid h-fit rounded-xl border-zinc-700 bg-[radial-gradient(circle_at_top_right,_#262933,_#1b1d25)] p-4 md:w-[22rem]"}>
-                            <h1 className={"w-fit font-cera text-xl text-gray-400"}>Donasi Terkumpul</h1>
-                            <NumericFormat
-                                displayType="text"
-                                value={payment.total / 100}
-                                prefix={"Rp. "}
-                                thousandSeparator={"."}
-                                decimalSeparator={","}
-                                className={"w-fit bg-gradient-to-r from-sky-600 to-sky-400 bg-clip-text font-montserrat text-4xl font-bold tracking-wide text-transparent"}
-                            />
-                            {payment.intents && (
-                                <div>
-                                    <NumericFormat
-                                        displayType="text"
-                                        value={payment.intents[0].amount / 100}
-                                        prefix={"+ Rp. "}
-                                        thousandSeparator={"."}
-                                        decimalSeparator={","}
-                                        className={"w-fit py-1 font-montserrat text-sm text-white/60"}
-                                    />
-                                    <span className={"text-xs text-white/50"}> • {tanggal()}</span>
-                                </div>
-                            )}
-                            {payment.intents && (
-                                <div className={"grid gap-2 overflow-clip transition-all duration-500 ease-in-out"}>
-                                    <Donor intent={payment.intents[0]} />
-                                    <Donor intent={payment.intents[1]} />
-                                    <Button size={"sm"} className={"rounded-lg bg-[#414550]/25 text-gray-300 hover:bg-[#414550]/55"} asChild>
-                                        <Link to={"pencarian"}>Cari donor...</Link>
-                                    </Button>
-                                </div>
-                            )}
-                        </Card>
+                        <AnlyticCard aState={analyticState} />
+                        <NewsCard aState={newsState} />
+                        <DonationCard aState={paymentsState} />
                     </div>
                 </section>
 
@@ -307,7 +215,6 @@ function App() {
                                             />
                                         </TabsContent>
                                     </Tabs>
-
                                     <Button size={"lg"} type="submit" className="flex gap-2 place-self-end rounded-full border-2 border-emerald-500 bg-transparent font-semibold hover:bg-emerald-500">
                                         Lanjutkan
                                         <ArrowRight size={20} strokeWidth={3} />
@@ -316,7 +223,7 @@ function App() {
                             </Form>
                         </div>
                     </div>
-                    {payment.intents && <DonorCarousel className={"z-10 my-auto"} intent={payment.intents} />}
+                    <DonorCarousel className={"z-10 my-auto"} payment={paymentsState.data} />
                     <LazyLoadImage className={"absolute bottom-0 z-0 -scale-x-100 p-24 opacity-5 blur contrast-200 saturate-0"} src={mountVector} />
                 </section>
                 {/* Section 3 | Features */}
@@ -393,23 +300,39 @@ function App() {
                                     <p className="mb-6 block text-sm font-bold uppercase tracking-wide text-gray-300">Berita</p>
                                     <h1 className={"pr-16 font-cera text-3xl font-bold"}>Berita dan Informasi Gunung berapi Terkini dan Terbaru.</h1>
                                 </div>
-                                <div className={"flex h-full w-1/2 items-center"}>
-                                    <div className={"flex h-fit flex-col gap-4 rounded-2xl bg-[#1b1d25]/75 px-4 py-4 backdrop-blur-lg backdrop-contrast-75"}>
-                                        <Button variant={"ghost"} size={"sm"} className={"w-fit place-self-end font-semibold text-rose-500 hover:bg-rose-600 hover:text-white"} asChild>
-                                            <Link to={"/news"}>Lihat semua</Link>
-                                        </Button>
-                                        {news &&
-                                            news.map((item) => (
-                                                <div key={item.id} className={"rounded p-2 transition-all hover:cursor-pointer hover:bg-[#2d303b]"} onClick={() => navigate(`/news/${item.site.id}`)}>
-                                                    <div className={"flex h-48 w-[40rem] gap-2 rounded-md"}>
-                                                        <LazyLoadImage className={"aspect-[3/2] rounded-md"} src={item.image} alt={"news"} />
-                                                        <div className={"flex flex-col justify-between px-2 py-1"}>
-                                                            <div>
-                                                                <div className={"w-fit rounded-full bg-rose-600 px-2 py-[1px] font-cera text-sm font-medium"}>{item.site.name}</div>
-                                                                <h1 className={"line-clamp-2 font-cera text-xl font-bold"}>{item.title}</h1>
-                                                                <p className={"line-clamp-3 text-sm text-gray-300"}>{item.short_description}</p>
-                                                            </div>
-                                                            <p className={"text-right text-sm text-gray-400"}>{date.format(date.parse(item.date, "YYYY-MM-DDThh:mm:ss"), "dddd, DD MMMM YYYY")}</p>
+                                <div className={"flex h-full w-1/2 items-center justify-center"}>
+                                    <div className={"flex h-fit flex-col gap-4 rounded-2xl bg-[#1b1d25]/25 px-4 py-4 backdrop-blur-md backdrop-contrast-75 backdrop-saturate-200"}>
+                                        <div className={"flex items-center"}>
+                                            <p className={"flex-grow font-cera text-lg font-medium"}>News Feed</p>
+                                            <Button variant={"ghost"} size={"sm"} className={"w-fit place-self-end font-semibold text-rose-500 hover:bg-rose-600 hover:text-white"} asChild>
+                                                <Link to={"/news"}>Lihat semua</Link>
+                                            </Button>
+                                        </div>
+
+                                        {newsState.data &&
+                                            newsState.data.map((item) => (
+                                                <div
+                                                    key={item.id}
+                                                    className={"flex h-48 w-[36rem] gap-2 rounded-lg p-2 transition-all hover:cursor-pointer hover:bg-[#2d303b]"}
+                                                    onClick={() => navigate(`/news/${item.site.id}`)}>
+                                                    <LazyLoadImage className={"aspect-[4/3] rounded-md"} src={item.image} alt={"news"} />
+                                                    <div className={"flex flex-col justify-between px-2 py-1"}>
+                                                        <div className={"flex items-center gap-3"}>
+                                                            <Avatar className={"h-5 w-5"}>
+                                                                <AvatarImage src={item.site.logo} />
+                                                                <AvatarFallback>DN</AvatarFallback>
+                                                            </Avatar>
+                                                            <p className={"text-sm font-medium"}>
+                                                                {item.site.name}{" "}
+                                                                <span className={"text-sm font-normal text-gray-400"}>• {newsDate(new Date(), date.parse(item.date, "YYYY-MM-DDThh:mm:ss"))}</span>
+                                                            </p>
+                                                        </div>
+                                                        <p className={"line-clamp-2 font-cera text-xl font-bold"}>{item.title}</p>
+                                                        <p className={"line-clamp-3 text-sm text-muted-foreground"}>{item.short_description}</p>
+                                                        <div className={"flex gap-3 text-sm text-gray-400"}>
+                                                            <p className={"font-medium text-rose-400"}>{item.type}</p>
+                                                            <span>•</span>
+                                                            <p>{readingTime(item.description).minutes} menit baca</p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -426,6 +349,161 @@ function App() {
 }
 
 export default App
+
+function AnlyticCard({ aState }: { aState: MainAnalyticRedux }) {
+    if (aState.loading || aState.error || !aState.data)
+        return (
+            <Card
+                className={
+                    "relative flex h-fit rounded-xl border-zinc-700 bg-[radial-gradient(circle_at_top_left,_#373b46,_#1b1d25)] ring-white/80 transition-all hover:shadow-xl hover:shadow-white/50 hover:ring-4 md:w-80"
+                }>
+                <LazyLoadImage className={"absolute bottom-0 p-2"} src={mountVector} />
+                <div className={"z-10 grid w-full gap-2 rounded-xl bg-gradient-to-r from-[#1b1d2566] to-[#1b1d25] p-4"}>
+                    <div className={"flex justify-between"}>
+                        <span className={"w-fit rounded-full bg-rose-600 px-2 py-0.5 text-sm font-semibold"}>Erupsi</span>
+                        <Info className={"stroke-gray-500"} />
+                    </div>
+                    <Skeleton className={"h-7 w-64"} />
+                    <Skeleton className={"h-3 w-24"} />
+                    <Skeleton className={"h-3 w-24"} />
+                    <div className={"mt-2 grid gap-1"}>
+                        <Skeleton className={"h-3"} />
+                        <Skeleton className={"h-3"} />
+                        <Skeleton className={"h-3 w-36"} />
+                    </div>
+                </div>
+            </Card>
+        )
+
+    const item = aState.data.children[0]
+    return (
+        <HoverCard>
+            <HoverCardTrigger className={"h-fit"}>
+                <Link to={`analitik/informasi-letusan/laporan?url=${item.url}`}>
+                    <Card
+                        className={
+                            "relative order-2 flex h-fit rounded-xl border-zinc-700 bg-[radial-gradient(circle_at_top_left,_#373b46,_#1b1d25)] ring-white/80 transition-all hover:shadow-xl hover:shadow-white/50 hover:ring-4 md:w-80"
+                        }>
+                        <LazyLoadImage className={"absolute bottom-0 p-2"} src={mountVector} />
+                        <div className={"z-10 grid w-full rounded-xl bg-gradient-to-r from-[#1b1d2566] to-[#1b1d25] p-4"}>
+                            <div className={"flex justify-between"}>
+                                <span className={"w-fit rounded-full bg-rose-600 px-2 py-0.5 text-sm font-semibold"}>Erupsi</span>
+                                <Info className={"stroke-gray-500"} />
+                            </div>
+                            <p className={"w-fit font-cera text-2xl font-medium"}>Gunung {item.title}</p>
+                            <p className={"w-fit text-left text-xs text-gray-300"}>{aState.data.date}</p>
+                            <p className={"w-fit text-left text-xs text-gray-400"}>Pukul {item.time}</p>
+                            <p className={"line-clamp-4 pt-4 text-sm text-gray-300"}>{item.text}</p>
+                        </div>
+                    </Card>
+                </Link>
+            </HoverCardTrigger>
+            <HoverCardContent className={"rounded-xl bg-[#2d303b]/30 backdrop-blur-lg backdrop-saturate-100 md:w-80"}>
+                <LazyLoadImage src={item.image} className={"w-full rounded-lg opacity-90 transition-all duration-500 ease-in-out"} />
+            </HoverCardContent>
+        </HoverCard>
+    )
+}
+
+function NewsCard({ aState }: { aState: MainNewsRedux }) {
+    if (aState.loading || aState.error || !aState.data)
+        return (
+            <Card className={"group mt-24 hidden rounded-xl border-zinc-700 bg-[#2d303b] md:order-4 lg:flex"}>
+                <div className={"bottom-0 flex h-64 w-96 flex-col justify-end gap-2 rounded-xl bg-gradient-to-b from-[#0F1014]/10 via-[#0F1014]/40 to-[#0F1014]/80 p-2"}>
+                    <div className={"flex items-center gap-3"}>
+                        <Skeleton className={"h-6 w-6 rounded-full"} />
+                        <Skeleton className={"h-6 w-36"} />
+                    </div>
+                    <Skeleton className={"h-7"} />
+                    <div className={"grid gap-1"}>
+                        <Skeleton className={"h-3"} />
+                        <Skeleton className={"h-3"} />
+                    </div>
+                </div>
+            </Card>
+        )
+
+    const item = aState.data[0]
+    const added = date.parse(item.date, "YYYY-MM-DDThh:mm:ss")
+    return (
+        <Link className={"mt-24"} to={`news/${item.site.id}`}>
+            <Card
+                className={
+                    "group relative order-1 hidden rounded-xl border-zinc-700 ring-white/80 transition-all duration-500 ease-in-out hover:shadow-xl hover:shadow-white/50 hover:ring-4 md:order-4 lg:flex"
+                }>
+                <LazyLoadImage src={item.image} alt={""} className={"h-64 w-96 rounded-xl bg-[#1b1d25]"} />
+                <div className={"absolute bottom-0 flex h-64 flex-col justify-end rounded-xl bg-gradient-to-b from-[#0F1014]/10 via-[#0F1014]/40 to-[#0F1014]/80 p-2"}>
+                    <div className={"flex items-center gap-3"}>
+                        <Avatar className={"h-5 w-5"}>
+                            <AvatarImage src={item.site.logo} />
+                            <AvatarFallback>DN</AvatarFallback>
+                        </Avatar>
+                        <p className={"text-xs font-medium"}>
+                            {item.site.name} <span className={"text-xs font-normal text-gray-400"}>• {newsDate(new Date(), added)}</span>
+                        </p>
+                    </div>
+                    <h1 className={"line-clamp-1 text-start font-cera text-xl font-medium"}>{item.title}</h1>
+                    <p className={"line-clamp-2 flex-wrap text-wrap text-start text-sm text-gray-400"}>{item.short_description}</p>
+                </div>
+            </Card>
+        </Link>
+    )
+}
+
+function DonationCard({ aState }: { aState: SearchRedux }) {
+    if (aState.loading || aState.error || !aState.data)
+        return (
+            <Card className={"group order-5 grid h-fit rounded-xl border-zinc-700 bg-[radial-gradient(circle_at_top_right,_#262933,_#1b1d25)] p-4 md:w-[22rem]"}>
+                <h1 className={"w-fit font-cera text-lg text-gray-400"}>Donasi Terkumpul</h1>
+                <Skeleton className={"h-10 w-9/12"} />
+                <div className={"mt-4 grid gap-2"}>
+                    <Skeleton className={"flex h-14 items-center gap-2 px-3"}>
+                        <Skeleton className={"h-11 w-11 shrink-0 rounded-full bg-[#3c4154]"} />
+                        <Skeleton className={"h-6 w-28 shrink-0 bg-[#3c4154]"} />
+                        <div className={"flex w-full flex-col items-end gap-2"}>
+                            <Skeleton className={"h-5 w-28 bg-[#3c4154]"} />
+                            <Skeleton className={"h-2 w-28 bg-[#3c4154]"} />
+                        </div>
+                    </Skeleton>
+                    <Skeleton className={"flex h-14 items-center gap-2 px-3"}>
+                        <Skeleton className={"h-11 w-11 shrink-0 rounded-full bg-[#3c4154]"} />
+                        <Skeleton className={"h-6 w-28 shrink-0 bg-[#3c4154]"} />
+                        <div className={"flex w-full flex-col items-end gap-2"}>
+                            <Skeleton className={"h-5 w-28 bg-[#3c4154]"} />
+                            <Skeleton className={"h-2 w-28 bg-[#3c4154]"} />
+                        </div>
+                    </Skeleton>
+                    <Button size={"sm"} className={"rounded-lg bg-[#414550]/25 font-varela text-gray-300 hover:bg-[#414550]/55"} asChild>
+                        <Link to={"pencarian"}>Cari donasi...</Link>
+                    </Button>
+                </div>
+            </Card>
+        )
+
+    if (aState.data) {
+        const item = aState.data
+        return (
+            <Card className={"group order-5 grid h-fit rounded-xl border-zinc-700 bg-[radial-gradient(circle_at_top_right,_#262933,_#1b1d25)] p-4 md:w-[22rem]"}>
+                <h1 className={"w-fit font-cera text-lg text-gray-400"}>Donasi Terkumpul</h1>
+                <NumericFormat
+                    displayType="text"
+                    value={item.total / 100}
+                    prefix={"Rp. "}
+                    thousandSeparator={"."}
+                    decimalSeparator={","}
+                    className={"w-fit bg-gradient-to-r from-emerald-600 to-emerald-400 bg-clip-text font-montserrat text-4xl font-bold tracking-wide text-transparent"}
+                />
+                <div className={"mt-4 grid gap-2 transition-all duration-500 ease-in-out"}>
+                    <Donor intent={item.intents[0]} />
+                    <Donor intent={item.intents[1]} />
+                    <Button size={"sm"} className={"rounded-lg bg-[#414550]/25 font-varela text-gray-300 hover:bg-[#414550]/55"} asChild>
+                        <Link to={"pencarian"}>Cari donasi...</Link>
+                    </Button>
+                </div>
+            </Card>
+        )
+    }
+}
 
 const donateGroup: { nominal: number; nString: string; formatted: string }[] = [
     { nominal: 10000, nString: "10000", formatted: "Rp. 10.000" },
