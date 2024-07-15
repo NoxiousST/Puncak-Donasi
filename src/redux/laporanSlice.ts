@@ -1,9 +1,6 @@
 import { createSlice, createAsyncThunk, SerializedError } from "@reduxjs/toolkit"
 import axios from 'axios';
 import { ResponseActivity } from "@/lib/type.ts"
-import { SERVER } from "@/lib/utils.ts"
-
-
 
 interface MapRedux {
     loading: boolean;
@@ -20,9 +17,7 @@ const initialState: MapRedux = {
 export const fetchLaporan = createAsyncThunk(
     'laporan/fetchLaporan',
     async () => {
-        const server = import.meta.env.VITE_APP_SERVER
-        const response = await axios.get(`${server}/mapbox`);
-        console.log(response)
+        const response = await axios.get(`https://apipuncak.vercel.app/mapbox`);
         return response.data.aktivitas as ResponseActivity[];
     }
 );
