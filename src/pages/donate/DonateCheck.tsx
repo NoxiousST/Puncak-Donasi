@@ -17,7 +17,7 @@ import mountVector from "@/assets/MountVector.svg"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 
 const FormSchema = z.object({
-    name: z.string(),
+    name: z.string().optional(),
     email: z.string().email({
         message: "Email tidak valid!",
     }),
@@ -47,7 +47,7 @@ export default function DonateCheck() {
     const navigate = useNavigate()
 
     function onSubmit(data: z.infer<typeof FormSchema>) {
-        if (newName.trim().length === 0) data.name = "Anonymous"
+        if (!data.name) data.name = newName
         navigate("/donasi/checkout", { state: data })
     }
 
