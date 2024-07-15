@@ -335,7 +335,7 @@ function App() {
                                                 <div
                                                     key={item.id}
                                                     className={"flex h-48 w-[36rem] gap-2 rounded-lg p-2 transition-all hover:cursor-pointer hover:bg-[#2d303b]"}
-                                                    onClick={() => navigate(`/news/${item.site.id}`)}>
+                                                    onClick={() => navigate(`/news/${item.id}`)}>
                                                     <LazyLoadImage className={"aspect-[4/3] rounded-md"}
                                                                    src={item.image} alt={"news"} />
                                                     <div className={"flex flex-col justify-between px-2 py-1"}>
