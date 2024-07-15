@@ -6,7 +6,7 @@ import { SerializedError } from "@reduxjs/toolkit"
 export default function Error() {
     const error = useRouteError() as Error
     return (
-        <section id="error-page" className="flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#1b1d25] px-16 py-20 text-gray-100">
+        <section id="error-page" className="flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#1b1d25] px-16 py-20 text-gray-100">
             <div className="flex flex-col items-center gap-2 text-center">
                 <p className="mb-8 text-center text-8xl font-extrabold text-rose-600">{error && error.name}</p>
                 <p className="text-2xl font-semibold md:text-3xl">{error && error.message}</p>
@@ -22,7 +22,7 @@ export default function Error() {
 
 export function ReduxError({ error }: { error: SerializedError }) {
     return (
-        <section id="error-page" className="flex h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#1b1d25] px-16 py-20 text-gray-100">
+        <section id="error-page" className="flex min-h-screen w-full flex-col items-center justify-center overflow-hidden bg-[#1b1d25] px-16 py-20 text-gray-100">
             <div className="flex flex-col items-center gap-2 text-center">
                 <p className="text-center font-semibold bg-rose-600 py-1 px-3 rounded-full text-gray-100">
                     {error.code}
