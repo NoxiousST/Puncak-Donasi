@@ -19,6 +19,7 @@ export const fetchLaporan = createAsyncThunk(
     'laporan/fetchLaporan',
     async () => {
         const response = await axios.get(`${SERVER}/mapbox`);
+        console.log(response)
         return response.data.aktivitas as ResponseActivity[];
     }
 );
