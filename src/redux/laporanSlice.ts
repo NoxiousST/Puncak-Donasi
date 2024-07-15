@@ -3,8 +3,6 @@ import axios from 'axios';
 import { ResponseActivity } from "@/lib/type.ts"
 import { SERVER } from "@/lib/utils.ts"
 
-const server = import.meta.env.VITE_APP_SERVER
-
 interface MapRedux {
     loading: boolean;
     data: ResponseActivity[] | null;
@@ -20,7 +18,7 @@ const initialState: MapRedux = {
 export const fetchLaporan = createAsyncThunk(
     'laporan/fetchLaporan',
     async () => {
-        const response = await axios.get(`${server}/mapbox`);
+        const response = await axios.get(`${SERVER}/mapbox`);
         return response.data.aktivitas as ResponseActivity[];
     }
 );
