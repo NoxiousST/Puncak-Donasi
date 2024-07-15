@@ -454,7 +454,7 @@ function NewsCard({ aState }: { aState: MainNewsRedux }) {
     const item = aState.data[0]
     const added = date.parse(item.date, "YYYY-MM-DDThh:mm:ss")
     return (
-        <Link className={"xl:mt-24"} to={`news/${item.site.id}`}>
+        <Link className={"xl:mt-24"} to={`news/${item.id}`}>
             <Card
                 className={"group relative rounded-xl border-zinc-700 ring-white/80 transition-all duration-500 ease-in-out hover:shadow-xl hover:shadow-white/50 hover:ring-4 md:order-4 lg:flex"}>
                 <LazyLoadImage src={item.image} className={"h-64 lg:w-full xl:w-96 rounded-xl"} />
