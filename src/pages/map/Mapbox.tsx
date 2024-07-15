@@ -130,7 +130,7 @@ const Mapbox: React.FC = () => {
                     ref={mapRef}
                     reuseMaps
                     styleDiffing
-                    mapboxAccessToken={import.meta.env.VITE_MAPBOX_KEY}
+                    mapboxAccessToken={"pk.eyJ1Ijoibm94aW91c3N0IiwiYSI6ImNsY3VsbmFnYTA2amczdW83cDEyNW10a3MifQ.MyxSDj1DbhKZ7IvDm76G8w"}
                     initialViewState={{
                         latitude: -3,
                         longitude: 117,
