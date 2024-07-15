@@ -44,7 +44,7 @@ export default function StripeForm({ email }:  { email: string }) {
         const { error } = await stripe.confirmPayment({
             elements,
             confirmParams: {
-                return_url: `${HOST}/donasi/success`,
+                return_url: `https://puncakdonasi.vercel.app/donasi/success`,
             },
         })
 

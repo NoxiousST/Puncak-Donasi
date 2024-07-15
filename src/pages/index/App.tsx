@@ -91,7 +91,7 @@ function App() {
                     </div>
                     <div className={"flex justify-center gap-12 font-cera md:mt-4"}>
                         <Button
-                            className="group flex rounded-xl border-2 border-gray-500 !bg-transparent p-6 text-lg font-bold uppercase tracking-wider text-white transition-all hover:border-gray-200">
+                            className="group flex rounded-xl border-2 border-gray-500 !bg-transparent p-6 text-lg font-bold uppercase tracking-wider text-white transition-all hover:border-gray-200" asChild>
                             <Link to={"tentang-kami"}>Tentang Kami</Link>
                         </Button>
                         <Button
