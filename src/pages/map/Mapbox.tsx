@@ -15,9 +15,8 @@ import orange from "@/assets/orange.png"
 import yellow from "@/assets/yellow.png"
 import green from "@/assets/green.png"
 import { Mount } from "@/lib/type.ts"
-import Error, { ReduxError } from "@/error.tsx"
+import { ReduxError } from "@/error.tsx"
 import LoadingScreen from "@/pages/LoadingScreen.tsx"
-import { SerializedError } from "@reduxjs/toolkit"
 
 const Mapbox: React.FC = () => {
     const mapRef = useRef<MapRef | null>(null)

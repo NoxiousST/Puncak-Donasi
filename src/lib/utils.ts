@@ -20,6 +20,5 @@ export const newsDate = (now: Date, added: Date) => {
     return difference.toHours() < 1 ? `${difference.toMinutes().toFixed()} menit yang lalu` : `${difference.toHours().toFixed()} jam yang lalu`
 }
 
-export const SERVER = import.meta.env.VITE_APP_SERVER
-
-export const HOST = import.meta.env.VITE_APP_HOST
+export const SERVER = import.meta.env.APP_SERVER
+export const HOST = import.meta.env.APP_HOST

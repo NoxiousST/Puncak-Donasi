@@ -1,5 +1,5 @@
 import { Link, Outlet } from "react-router-dom"
-import { Menu, Terminal, Map, ArrowRight, Home } from "lucide-react"
+import { Menu, Map, ArrowRight, Home } from "lucide-react"
 import { Button } from "@/components/ui/button.tsx"
 import { HashLink } from "react-router-hash-link"
 
