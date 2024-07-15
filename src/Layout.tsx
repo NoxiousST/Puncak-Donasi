@@ -104,11 +104,7 @@ import { Input } from "@/components/ui/input.tsx"
 import { ICFacebook, ICInstagram, ICTwitter } from "@/components/Icons.tsx"
 import {
     Sheet,
-    SheetClose,
     SheetContent,
-    SheetDescription,
-    SheetHeader,
-    SheetTitle,
     SheetTrigger
 } from "@/components/ui/sheet.tsx"
 import { Accordion, AccordionContent, AccordionTrigger } from "./components/ui/accordion"

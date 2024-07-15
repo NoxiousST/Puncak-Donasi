@@ -6,7 +6,6 @@ import { Link } from "react-router-dom"
 import { LazyLoadImage } from "react-lazy-load-image-component"
 import { Pagination, PaginationContent, PaginationItem, PaginationNext, PaginationPrevious } from "@/components/ui/pagination.tsx"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb.tsx"
-import { SERVER } from "@/lib/utils.ts"
 import { EruptionInformation } from "@/lib/type.ts"
 
 export default function InformasiLetusan() {

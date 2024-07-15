@@ -44,7 +44,7 @@ export default function News() {
                 </div>
             </div>
 
-            <Link to={news[0].id} className={"flex gap-12"}>
+            <Link to={`${news[0].id}`} className={"flex gap-12"}>
                 <div className={"basis-1/2 px-4"}>
                     <LazyLoadImage className={"aspect-[16/10] w-full rounded-xl"} src={news[0].image} />
                 </div>

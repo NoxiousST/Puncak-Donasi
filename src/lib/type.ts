@@ -1,5 +1,3 @@
-import { SerializedError } from "@reduxjs/toolkit"
-
 export enum Size {
     Small,
     Medium,

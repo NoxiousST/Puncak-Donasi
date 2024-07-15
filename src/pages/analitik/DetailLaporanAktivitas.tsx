@@ -13,7 +13,6 @@ import {
     BreadcrumbList,
     BreadcrumbSeparator
 } from "@/components/ui/breadcrumb.tsx"
-import { SERVER } from "@/lib/utils.ts"
 import { ActivityReportDetail } from "@/lib/type.ts"
 
 export default function DetailLaporanAktivitas() {

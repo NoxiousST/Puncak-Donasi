@@ -9,7 +9,6 @@ import volcano from "@/assets/orange.png"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbSeparator } from "@/components/ui/breadcrumb.tsx"
 import { EruptionInformationDetail } from "@/lib/type.ts"
 import classNames from "classnames"
-import { SERVER } from "@/lib/utils.ts"
 
 export default function DetailLaporanLetsuan() {
     const [item, setItem] = useState<EruptionInformationDetail>()

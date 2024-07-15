@@ -1,7 +1,6 @@
 import { createSlice, createAsyncThunk, SerializedError } from "@reduxjs/toolkit"
 import axios from 'axios';
 import { EruptionInformation } from "@/lib/type.ts"
-import { SERVER } from "@/lib/utils.ts"
 
 export interface MainAnalyticRedux {
     loading: boolean;
@@ -18,7 +17,7 @@ const initialState: MainAnalyticRedux = {
 export const fetchMainAnalytic = createAsyncThunk(
     'mAnalytic/fetchMainAnalytic',
     async () => {
-        const response = await axios.get(`${SERVER}/informasi-letusan?page=1`)
+        const response = await axios.get(`https://apipuncak.vercel.app/informasi-letusan?page=1`)
         return response.data.data[0] as EruptionInformation
     }
 );

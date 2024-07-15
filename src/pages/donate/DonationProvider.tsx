@@ -1,7 +1,6 @@
 import { createContext, useEffect } from "react"
 import { Intent } from "@/lib/type.ts"
 import LoadingScreen from "@/pages/LoadingScreen.tsx"
-import { SERVER } from "@/lib/utils.ts"
 import { useDispatch, useSelector } from "react-redux"
 import { AppDispatch, RootState } from "@/redux/store.ts"
 

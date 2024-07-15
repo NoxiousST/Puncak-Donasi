@@ -18,7 +18,6 @@ import { z } from "zod"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { Form, FormControl, FormField, FormItem, FormLabel } from "@/components/ui/form.tsx"
-import { SERVER } from "@/lib/utils.ts"
 
 const initStripe = async () => {
     const res = await axios.get(`https://apipuncak.vercel.app/publishkey`)

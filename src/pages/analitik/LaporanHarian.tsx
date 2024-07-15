@@ -5,7 +5,6 @@ import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbS
 import { Link } from "react-router-dom"
 import date from "date-and-time"
 import id from 'date-and-time/locale/id';
-import { SERVER } from "@/lib/utils.ts"
 import { DailyReport } from "@/lib/type.ts"
 
 
