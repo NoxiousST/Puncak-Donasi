@@ -34,7 +34,7 @@ export default function News() {
     const minutes = readingTime(news[0].description).minutes
 
     return (
-        <div className={"grid gap-12 bg-[radial-gradient(circle_at_top,_#2d303bcc,_#0F1014)] px-24 py-8 font-cera"}>
+        <div className={"grid gap-12 bg-[radial-gradient(circle_at_top,_#2d303bcc,_#0F1014)] px-24 py-24 font-cera"}>
             <div className={"grid gap-4 rounded-lg bg-[#414550]/25 py-4 text-center shadow-lg drop-shadow-lg backdrop-blur-sm backdrop-saturate-100"}>
                 <Label className={"text-lg font-medium tracking-widest text-gray-400"}>Jelajahi Berita</Label>
                 <div className={"pb-2 text-4xl font-bold"}>
@@ -106,7 +106,7 @@ function NewsList({ berita }: News) {
                 "grid basis-1/4 cursor-pointer bg-[#414550]/15 shadow-lg ring-rose-500 drop-shadow-lg backdrop-blur-sm backdrop-saturate-100 transition-all hover:scale-[.98] hover:ring-4"
             }>
             <LazyLoadImage
-                className={"aspect-[6/5] w-full rounded-xl"}
+                className={"aspect-[6/5] object-cover w-full rounded-xl"}
                 src={berita.image}
             />
             <div className={"mt-6 flex items-center gap-3 px-4"}>

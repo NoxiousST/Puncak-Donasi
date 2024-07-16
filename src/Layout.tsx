@@ -127,7 +127,8 @@ function Navigation() {
                                         <Home className="h-6 w-6 stroke-rose-500" />
                                         <div className="mb-2 mt-4 text-lg font-medium">home/beranda</div>
                                         <p className="text-sm leading-tight text-muted-foreground">
-                                            Pusat informasi dan donasi untuk memberikan bantuan kepada korban letusan gunung di Indonesia.
+                                            Pusat informasi dan donasi untuk memberikan bantuan kepada korban letusan
+                                            gunung di Indonesia.
                                         </p>
                                     </a>
                                 </NavigationMenuLink>
@@ -259,19 +260,20 @@ function MobileNavbar() {
             <SheetContent side={"top"} className={"bg-[#1b1d25] h-full py-24 md:!hidden"}>
                 <Accordion type="single" collapsible className="w-full">
                     <AccordionItem value="item-1">
-                        <AccordionTrigger>Is it accessible?</AccordionTrigger>
+                        <AccordionTrigger>Platform</AccordionTrigger>
                         <AccordionContent className={"grid"}>
-                            <Button variant={"link"} className={"text-left justify-start"} onClick={handleSheet} asChild>
+                            <Button variant={"link"} className={"text-left justify-start"} onClick={handleSheet}
+                                    asChild>
                                 <Link to="tentang-kami">
                                     Tentang Kami
                                 </Link>
                             </Button>
-                            <Button variant={"link"}  className={"text-left justify-start"} asChild>
+                            <Button variant={"link"} className={"text-left justify-start"} asChild>
                                 <HashLink to="/#donate-section">
                                     Donasi
                                 </HashLink>
                             </Button>
-                            <Button variant={"link"}  className={"text-left justify-start"} asChild>
+                            <Button variant={"link"} className={"text-left justify-start"} asChild>
                                 <Link to="pencarian">
                                     Pencarian
                                 </Link>
@@ -279,19 +281,36 @@ function MobileNavbar() {
                         </AccordionContent>
                     </AccordionItem>
                     <AccordionItem value="item-2">
-                        <AccordionTrigger>Is it styled?</AccordionTrigger>
-                        <AccordionContent>
-                            Yes. It comes with default styles that matches the other
-                            components&apos; aesthetic.
+                        <AccordionTrigger>Analitik</AccordionTrigger>
+                        <AccordionContent className={"grid"}>
+                            <Button variant={"link"} className={"text-left justify-start"} onClick={handleSheet}
+                                    asChild>
+                                <Link to="analitik/tingkat-aktivitas">
+                                    Tingkat Aktivitas
+                                </Link>
+                            </Button>
+                            <Button variant={"link"} className={"text-left justify-start"} asChild>
+                                <Link to="analitik/laporan-aktivitas">
+                                    Laporan Aktivitas
+                                </Link>
+                            </Button>
+                            <Button variant={"link"} className={"text-left justify-start"} asChild>
+                                <Link to="analitik/laporan-harian">
+                                    Laporan Harian
+                                </Link>
+                            </Button>
+                            <Button variant={"link"} className={"text-left justify-start"} asChild>
+                                <Link to="analitik/informasi-letusan">
+                                    Informasi Letusan
+                                </Link>
+                            </Button>
                         </AccordionContent>
                     </AccordionItem>
-                    <AccordionItem value="item-3">
-                        <AccordionTrigger>Is it animated?</AccordionTrigger>
-                        <AccordionContent>
-                            Yes. It&apos;s animated by default, but you can disable it if you
-                            prefer.
-                        </AccordionContent>
-                    </AccordionItem>
+                    <Button variant={"link"} className={"flex flex-1 text-left justify-start p-0"} asChild>
+                        <Link to="news" className={"items-center justify-between py-4 font-medium transition-all hover:underline text-base font-inter"}>
+                            Berita & Informasi
+                        </Link>
+                    </Button>
                 </Accordion>
             </SheetContent>
         </Sheet>

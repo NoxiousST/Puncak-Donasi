@@ -61,7 +61,7 @@ export default function NewsDetail() {
                                 <Share2/>
                             </Button>
                             <Button variant={"ghost"} size={"icon"} className={"hover:bg-blue-500 hover:text-white"} asChild>
-                                <Link to={news.link}>
+                                <Link to={news.link} target="_blank" rel="noopener noreferrer">
                                     <ArrowUpRight strokeWidth={2.5}/>
                                 </Link>
                             </Button>
